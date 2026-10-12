@@ -5,8 +5,8 @@ import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
   traitUpdate, matchConfigKeys,
-} from "../common.js?v=0.1.4";
-import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.4";
+} from "../common.js?v=0.1.5";
+import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.5";
 
 const BOOK_KEYS = ["primary", "secondary", "tertiary", "spelllike"];
 
@@ -350,6 +350,17 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
       && !i.getFlag(MODULE_ID, "imported"))
     .map((i) => i.id);
   if (stray.length) await actor.deleteEmbeddedDocuments("Item", stray);
+
+  // Items PF1 attached on its own (e.g. Toughness as supplement of "Unstoppable") that the
+  // import already contains → remove the automatic copy so effects don't count twice.
+  const isOurs = (i) => !!i.getFlag(MODULE_ID, "imported");
+  const itemKey = (i) => `${i.type}|${norm(i.name)}`;
+  const ourKeys = new Set(actor.items.filter(isOurs).map(itemKey));
+  const dupes = actor.items.filter((i) => !isOurs(i) && ourKeys.has(itemKey(i)));
+  if (dupes.length) {
+    await actor.deleteEmbeddedDocuments("Item", dupes.map((i) => i.id));
+    report.notes.push(`Doppelt (von PF1 automatisch angehängt) entfernt: ${dupes.map((i) => i.name).join(", ")}`);
+  }
 
   const hpMax = actor.system.attributes?.hp?.max;
   if (Number.isFinite(hpMax) && hpMax > 0) {

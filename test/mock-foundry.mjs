@@ -64,8 +64,8 @@ U.dwarf = addDoc("Dwarf", "race", {
   ],
   links: { supplements: [{ uuid: U.hardy }, { uuid: U.darkvision }, { uuid: U.hatred }] },
 });
-addDoc("Toughness", "feat", { subType: "feat", changes: [{ formula: "max(3, @attributes.hd.total)", target: "mhp" }] });
-U.unstoppable = addDoc("Unstoppable", "feat", { subType: "racial", changes: [{ formula: "1", target: "fort" }, { formula: "max(3, @attributes.hd.total)", target: "mhp" }] });
+U.toughness = addDoc("Toughness", "feat", { subType: "feat", changes: [{ formula: "max(3, @attributes.hd.total)", target: "mhp" }] });
+U.unstoppable = addDoc("Unstoppable", "feat", { subType: "racial", changes: [{ formula: "1", target: "fort" }], links: { supplements: [{ uuid: U.toughness }] } });
 addDoc("Medium Armor Proficiency", "feat", { subType: "feat" });
 addDoc("Shocking Grasp", "spell", { level: 1 });
 addDoc("Enlarge Person", "spell", { level: 1 });
@@ -145,6 +145,16 @@ class FakeActor {
   async createEmbeddedDocuments(type, list) {
     const out = list.map((d) => new FakeItem(this, d));
     for (const i of out) this.itemMap.set(i.id, i);
+    // Emulate PF1 auto-adding supplements of created items (e.g. bonus feats of racial traits).
+    for (const i of out) {
+      if (i.type === "race") continue;
+      for (const sup of i.system?.links?.supplements ?? []) {
+        const d = docFromUuid(sup.uuid);
+        const it = new FakeItem(this, { name: d.name, type: d.type, system: d.system });
+        this.itemMap.set(it.id, it);
+        log.push(`AUTO-SUPPLEMENT ${d.name}`);
+      }
+    }
     // Emulate PF1 auto-adding class associations (should be suppressed by the importer).
     for (const i of out) {
       if (i.type === "class") {

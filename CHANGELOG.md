@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.5
+- Talente, die PF1 über ein Volksmerkmal oder eine Klassenfähigkeit automatisch anhängt (z. B. Toughness über „Unstoppable“), werden nicht mehr doppelt geführt – TP waren dadurch zu hoch.
+
 ## 0.1.4
 - Die Startdatei ist jetzt ein kleiner Lader, der den eigentlichen Code immer frisch nachlädt. Updates wirken dadurch auch hinter Proxys/Tunneln (z. B. Cloudflare), die Dateien mit festem Namen lange zwischenspeichern.
 
