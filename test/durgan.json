@@ -1,0 +1,1458 @@
+{
+  "characterInfo": {
+    "alignment": "Lawful Neutral",
+    "levelInfo": {
+      "1": {
+        "Feats": [
+          {
+            "name": "Simple Weapon Proficiency",
+            "type": "Combat",
+            "source": "class"
+          },
+          {
+            "name": "Martial Weapon Proficiency (all)",
+            "type": "Combat",
+            "source": "class"
+          },
+          {
+            "name": "Light Armor Proficiency",
+            "type": "Combat",
+            "source": "class"
+          },
+          {
+            "source": "Level",
+            "types": "any",
+            "name": "Medium Armor Proficiency",
+            "type": "Combat",
+            "sectionType": "Combat"
+          },
+          {
+            "name": "Toughness",
+            "type": "General",
+            "source": "Unstoppable"
+          }
+        ],
+        "Class Features": [
+          {
+            "name": "Spellcasting (Magus)",
+            "type": ""
+          },
+          {
+            "name": "Cantrips",
+            "type": ""
+          },
+          {
+            "name": "Spellbooks",
+            "type": ""
+          },
+          {
+            "name": "Spell Combat",
+            "type": "Ex"
+          },
+          {
+            "name": "Arcane Pool",
+            "type": "Su",
+            "action": "add",
+            "fnName": "Arcane Pool Bladebound",
+            "hidden": true
+          }
+        ],
+        "SpellsPerDay": [
+          3,
+          1
+        ],
+        "BAB": 0,
+        "Fort": 2,
+        "Reflex": 0,
+        "Will": 2,
+        "classSkills": [
+          "Climb",
+          "Craft",
+          "Fly",
+          "Intimidate",
+          "Knowledge (arcana)",
+          "Knowledge (dungeoneering)",
+          "Knowledge (planes)",
+          "Profession",
+          "Ride",
+          "Spellcraft",
+          "Swim",
+          "Use Magic Device"
+        ],
+        "Proficiencies": [
+          {
+            "name": "Battleaxe",
+            "source": "Weapon Familiarity Dwarf Racial"
+          },
+          {
+            "name": "Heavy pick",
+            "source": "Weapon Familiarity Dwarf Racial"
+          },
+          {
+            "name": "Warhammer",
+            "source": "Weapon Familiarity Dwarf Racial"
+          }
+        ],
+        "archetypes": [
+          "Bladebound"
+        ],
+        "skillsPerLevel": "2",
+        "class": "Magus",
+        "hd": "d8",
+        "hp": 8,
+        "favoredClassBonus": "skill",
+        "classFeatureChoices": [],
+        "classLevel": {
+          "Magus": 1
+        },
+        "classFeatureEquivalents": [
+          {
+            "name": "Arcane Pool",
+            "source": "Arcane Pool Bladebound",
+            "className": "Magus"
+          }
+        ]
+      },
+      "level": 1
+    },
+    "traits": [
+      {
+        "name": "Ancestral Armor",
+        "type": "Social"
+      },
+      {
+        "name": "Tar Taargadth Trained",
+        "type": "Combat"
+      }
+    ],
+    "languages": [
+      "Dwarven",
+      "Common",
+      "Orc",
+      "Elven"
+    ],
+    "characterName": "Durgan",
+    "race": {
+      "race": "Dwarf",
+      "name": "Dwarf",
+      "abilities": [
+        {
+          "name": "Unstoppable",
+          "type": "alternate"
+        },
+        {
+          "name": "Slow And Steady",
+          "type": "standard"
+        },
+        {
+          "name": "Defensive Training",
+          "type": "standard"
+        },
+        {
+          "name": "Stability",
+          "type": "standard"
+        },
+        {
+          "name": "Greed",
+          "type": "standard"
+        },
+        {
+          "name": "Stonecunning",
+          "type": "standard"
+        },
+        {
+          "name": "Darkvision",
+          "type": "standard"
+        },
+        {
+          "name": "Hatred",
+          "type": "standard"
+        },
+        {
+          "name": "Weapon Familiarity",
+          "type": "standard"
+        }
+      ],
+      "size": "Medium",
+      "speed": 20,
+      "types": [
+        "humanoid"
+      ],
+      "subtypes": [
+        "dwarf"
+      ],
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "features": [
+        {
+          "name": "Darkvision 60 ft.",
+          "source": "Dwarf"
+        }
+      ]
+    },
+    "size": {
+      "baseSize": "Medium",
+      "total": "medium",
+      "specialSizeModifier": "medium",
+      "sizeModifier": "medium"
+    },
+    "type": "humanoid",
+    "subType": [
+      "dwarf"
+    ],
+    "dontApplyTypeBab": true,
+    "dontApplyTypeSaves": true,
+    "deity": {
+      "name": "Kols",
+      "domains": [
+        "Glory",
+        "Law",
+        "Nobility",
+        "Strength",
+        "Law (Inevitable)",
+        "Nobility (Leadership)",
+        "Law (Loyalty)",
+        "Strength (Resolve)"
+      ],
+      "alignment": "Lawful Neutral",
+      "weapon": [
+        "Warhammer"
+      ],
+      "pantheon": "Dwarven Deities"
+    },
+    "favoredClass": {
+      "Magus": {
+        "source": "Default"
+      }
+    },
+    "baseAge": "Adult"
+  },
+  "abilities": {
+    "str": {
+      "inherent": 16,
+      "total": 16,
+      "bonuses": [],
+      "check": 3,
+      "permanentTotal": 16
+    },
+    "dex": {
+      "inherent": 12,
+      "total": 12,
+      "bonuses": [],
+      "check": 1,
+      "permanentTotal": 12
+    },
+    "con": {
+      "inherent": 10,
+      "total": 12,
+      "bonuses": [
+        {
+          "value": 2,
+          "source": "Dwarf",
+          "type": "racial"
+        }
+      ],
+      "check": 1,
+      "permanentTotal": 12
+    },
+    "int": {
+      "inherent": 14,
+      "total": 14,
+      "bonuses": [],
+      "check": 2,
+      "permanentTotal": 14
+    },
+    "wis": {
+      "inherent": 8,
+      "total": 10,
+      "bonuses": [
+        {
+          "value": 2,
+          "source": "Dwarf",
+          "type": "racial"
+        }
+      ],
+      "check": 0,
+      "permanentTotal": 10
+    },
+    "cha": {
+      "inherent": 10,
+      "total": 8,
+      "bonuses": [
+        {
+          "value": -2,
+          "source": "Dwarf",
+          "type": "racial"
+        }
+      ],
+      "check": -1,
+      "permanentTotal": 8
+    }
+  },
+  "skills": {
+    "Acrobatics": {
+      "ability": "dex",
+      "bonuses": [
+        {
+          "source": "speedBonus",
+          "value": -4,
+          "type": "racial",
+          "situational": true,
+          "note": "to jump (Speed bonus)"
+        }
+      ],
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0
+    },
+    "Appraise": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 3,
+      "movementBonus": 0,
+      "bonuses": [
+        {
+          "source": "Greed Racial",
+          "value": 2,
+          "type": "racial",
+          "temporary": false,
+          "situational": true,
+          "note": "made to determine the price of non-magical goods that contain precious metals or gemstones.",
+          "race": "Dwarf"
+        }
+      ],
+      "ranks": 1
+    },
+    "Bluff": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0
+    },
+    "Climb": {
+      "ability": "str",
+      "defaultAbility": "str",
+      "acPenalty": -3,
+      "total": 0,
+      "movementBonus": 0,
+      "bonuses": [],
+      "classSkill": true
+    },
+    "Craft0": {
+      "baseName": "Craft",
+      "index": 0,
+      "ability": "int",
+      "defaultAbility": "int",
+      "acPenalty": 0,
+      "total": 6,
+      "movementBonus": 0,
+      "bonuses": [],
+      "ranks": 1,
+      "classSkill": true
+    },
+    "Diplomacy": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0
+    },
+    "Disable Device": {
+      "ability": "dex",
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0
+    },
+    "Disguise": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0
+    },
+    "Escape Artist": {
+      "ability": "dex",
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0
+    },
+    "Fly": {
+      "ability": "dex",
+      "sizeMult": 2,
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Handle Animal": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0
+    },
+    "Heal": {
+      "ability": "wis",
+      "acPenalty": 0,
+      "total": 0,
+      "movementBonus": 0
+    },
+    "Intimidate": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0,
+      "bonuses": [
+        {
+          "source": "Inherent",
+          "situational": true,
+          "note": "You gain a +4 bonus on Intimidate checks if you are larger than your target, and a –4 penalty on Intimidate checks if you are smaller than your target."
+        }
+      ],
+      "classSkill": true
+    },
+    "Knowledge (arcana)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 6,
+      "movementBonus": 0,
+      "ranks": 1,
+      "classSkill": true
+    },
+    "Knowledge (dungeoneering)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Knowledge (engineering)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Knowledge (geography)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0,
+      "bonuses": []
+    },
+    "Knowledge (history)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Knowledge (local)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Knowledge (nature)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Knowledge (nobility)": {
+      "ability": "int",
+      "bonuses": [],
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Knowledge (planes)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Knowledge (religion)": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 2,
+      "movementBonus": 0
+    },
+    "Linguistics": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 3,
+      "movementBonus": 0,
+      "ranks": 1
+    },
+    "Perception": {
+      "ability": "wis",
+      "bonuses": [
+        {
+          "source": "Stonecunning Racial",
+          "value": 2,
+          "type": "racial",
+          "temporary": false,
+          "situational": true,
+          "note": "whenever within 10 feet of unusual stonework, to notice things such as traps and hidden doors located in stone walls or floors",
+          "race": "Dwarf"
+        }
+      ],
+      "acPenalty": 0,
+      "total": 0,
+      "movementBonus": 0,
+      "ranks": 0
+    },
+    "Perform0": {
+      "baseName": "Perform",
+      "index": 0,
+      "ability": "cha",
+      "defaultAbility": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0
+    },
+    "Profession0": {
+      "baseName": "Profession",
+      "index": 0,
+      "ability": "wis",
+      "defaultAbility": "wis",
+      "acPenalty": 0,
+      "total": 0,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Ride": {
+      "ability": "dex",
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Sense Motive": {
+      "ability": "wis",
+      "bonuses": [],
+      "acPenalty": 0,
+      "total": 0,
+      "movementBonus": 0
+    },
+    "Sleight of Hand": {
+      "ability": "dex",
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0
+    },
+    "Spellcraft": {
+      "ability": "int",
+      "acPenalty": 0,
+      "total": 6,
+      "movementBonus": 0,
+      "bonuses": [],
+      "ranks": 1,
+      "classSkill": true
+    },
+    "Stealth": {
+      "ability": "dex",
+      "sizeMult": 4,
+      "acPenalty": -3,
+      "total": -2,
+      "movementBonus": 0,
+      "bonuses": []
+    },
+    "Survival": {
+      "ability": "wis",
+      "acPenalty": 0,
+      "total": 0,
+      "movementBonus": 0,
+      "bonuses": []
+    },
+    "Swim": {
+      "ability": "str",
+      "bonuses": [],
+      "defaultAbility": "str",
+      "acPenalty": -3,
+      "total": 0,
+      "movementBonus": 0,
+      "classSkill": true
+    },
+    "Use Magic Device": {
+      "ability": "cha",
+      "acPenalty": 0,
+      "total": -1,
+      "movementBonus": 0,
+      "classSkill": true
+    }
+  },
+  "disabledBooks": [],
+  "characterIndex": "character2",
+  "offense": {
+    "attacks": {
+      "attacks": [
+        {
+          "type": "melee",
+          "name": "Touch",
+          "weapon": "touch",
+          "critical": "",
+          "damageDice": 0,
+          "dmgType": [],
+          "special": [],
+          "weaponType": "light",
+          "source": "Touch",
+          "spellOnly": true,
+          "twoHanded": false,
+          "attackAbility": "str",
+          "damageAbility": "str",
+          "damageMult": 1,
+          "attackBonus": 3,
+          "secondaryAttackBonus": 3,
+          "fullAttackBonus": 3,
+          "secondFullAttackBonus": 3,
+          "damageBonus": 3,
+          "abilityDamageBonus": 3,
+          "secondaryAbilityDamageBonus": 1.5,
+          "secondaryDamageBonus": 1.5,
+          "secondaryDamageMult": 0.5,
+          "bonuses": [
+            {
+              "source": "Hatred Racial",
+              "value": 1,
+              "type": "racial",
+              "appliesTo": "attack",
+              "situational": true,
+              "note": "vs creatures of the Orc and Goblinoid subtypes.",
+              "race": "Dwarf"
+            }
+          ]
+        },
+        {
+          "type": "ranged",
+          "name": "Ranged-Touch",
+          "weapon": "ray",
+          "critical": "",
+          "damageDice": 0,
+          "dmgType": [],
+          "special": [],
+          "weaponType": "ranged",
+          "source": "Ranged-Touch",
+          "spellOnly": true,
+          "twoHanded": false,
+          "attackAbility": "dex",
+          "damageAbility": "str",
+          "damageMult": 0,
+          "attackBonus": 1,
+          "secondaryAttackBonus": 1,
+          "fullAttackBonus": 1,
+          "secondFullAttackBonus": 1,
+          "damageBonus": 3,
+          "abilityDamageBonus": 3,
+          "secondaryAbilityDamageBonus": 1.5,
+          "secondaryDamageBonus": 1.5,
+          "secondaryDamageMult": 0.5,
+          "bonuses": [
+            {
+              "source": "Hatred Racial",
+              "value": 1,
+              "type": "racial",
+              "appliesTo": "attack",
+              "situational": true,
+              "note": "vs creatures of the Orc and Goblinoid subtypes.",
+              "race": "Dwarf"
+            }
+          ]
+        },
+        {
+          "type": "melee",
+          "name": "Dwarven longhammer",
+          "weapon": "Dwarven longhammer",
+          "damageDice": "2d6",
+          "critical": "x3",
+          "dmgType": [
+            "B"
+          ],
+          "special": [
+            "reach"
+          ],
+          "weaponType": "two-handed",
+          "source": "equipment0",
+          "index": "equipment0",
+          "handedness": "two-handed",
+          "abilityMult": 1.5,
+          "size": "Medium",
+          "range": "",
+          "attackType": "equipmentAttack",
+          "attackAbility": "str",
+          "damageAbility": "str",
+          "damageMult": 1.5,
+          "attackBonus": 3,
+          "secondaryAttackBonus": 3,
+          "fullAttackBonus": 3,
+          "secondFullAttackBonus": 3,
+          "damageBonus": 5.5,
+          "abilityDamageBonus": 4.5,
+          "secondaryAbilityDamageBonus": 1.5,
+          "secondaryDamageBonus": 2.5,
+          "secondaryDamageMult": 0.5,
+          "bonuses": [
+            {
+              "source": "Hatred Racial",
+              "value": 1,
+              "type": "racial",
+              "appliesTo": "attack",
+              "situational": true,
+              "note": "vs creatures of the Orc and Goblinoid subtypes.",
+              "race": "Dwarf"
+            }
+          ],
+          "enchantments": []
+        }
+      ]
+    },
+    "cmb": {
+      "bull rush": {
+        "bonuses": [],
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "trip": {
+        "bonuses": [],
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "overrun": {
+        "bonuses": [],
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "bonuses": [
+        {
+          "source": "Hatred Racial",
+          "value": 1,
+          "type": "racial",
+          "appliesTo": "attack",
+          "situational": true,
+          "note": "vs creatures of the Orc and Goblinoid subtypes.",
+          "race": "Dwarf"
+        }
+      ],
+      "ability": "str",
+      "total": 3,
+      "dirty trick": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "disarm": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "drag": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "grapple": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "reposition": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "steal": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      },
+      "sunder": {
+        "total": 3,
+        "ability": "str",
+        "visible": false,
+        "maxSize": "large"
+      }
+    },
+    "initiative": {
+      "bonuses": [],
+      "ability": "dex",
+      "total": 1
+    },
+    "bab": 0,
+    "speed": {
+      "base": 20,
+      "baseTotal": 20,
+      "baseArmorTotal": 20,
+      "flyVisible": false,
+      "flyTotal": 0,
+      "flyArmorTotal": 0,
+      "swimVisible": false,
+      "swimTotal": 0,
+      "swimArmorTotal": 0,
+      "climbVisible": false,
+      "climbTotal": 0,
+      "climbArmorTotal": 0,
+      "burrowVisible": false,
+      "burrowTotal": 0,
+      "burrowArmorTotal": 0,
+      "chargeTotal": 40,
+      "chargeArmorTotal": 40,
+      "runTotal": 80,
+      "runArmorTotal": 80
+    },
+    "feint": {
+      "total": -1,
+      "speed": "1 standard action",
+      "visible": false
+    }
+  },
+  "schemaVersion": 64,
+  "social": {},
+  "combat": {
+    "Spell CombatclassFeatureMagus": {
+      "name": "Spell Combat",
+      "duration": "1 full-round action",
+      "color": "attack",
+      "levelReceived": 1,
+      "onClick": "effect",
+      "shortText": "Fight with a one-handed or light weapon and cast a spell as if two-weapon fighting. You may choose to take up to a {{bold}}-2{{/bold}} penalty on your attack roll to gain an equivalent circumstance bonus on a concentration check.",
+      "effect": "Spell Combat",
+      "attackType": "classFeature",
+      "class": "Magus"
+    },
+    "Arcane PoolclassFeatureMagus": {
+      "name": "Arcane Pool",
+      "duration": "1 swift action",
+      "color": "enchantment",
+      "poolName": "Arcane Pool",
+      "levelReceived": 1,
+      "onClick": "modal",
+      "stacks": true,
+      "modalType": "Weapon Enhancement",
+      "limitations": [],
+      "maxCost": 1,
+      "enhancementList": [],
+      "shortText": "Expend 1 use of your Arcane Pool to add enhancement bonuses to your weapon.",
+      "effect": "Arcane Pool",
+      "attackType": "classFeature",
+      "class": "Magus"
+    }
+  },
+  "defense": {
+    "ac": {
+      "bonuses": [
+        {
+          "source": "Defensive Training Racial",
+          "value": 4,
+          "type": "dodge",
+          "appliesTo": "ac",
+          "temporary": false,
+          "situational": true,
+          "note": "vs. monsters of the Giant subtype",
+          "race": "Dwarf"
+        }
+      ],
+      "ACPenalty": -3,
+      "shieldACPenalty": 0,
+      "armorACPenalty": -3,
+      "ability": "dex",
+      "armorACBonus": 5,
+      "shieldACBonus": 0,
+      "encumbranceMaxDex": 3,
+      "encumbranceACModifier": -3,
+      "agileACPenalty": -3,
+      "maxDexBonus": 3,
+      "arcaneSpellFailure": 20,
+      "total": 16,
+      "flatFooted": 15,
+      "touch": 11
+    },
+    "cmd": {
+      "total": 14,
+      "dexAbility": "dex",
+      "strAbility": "str",
+      "bull rush": {
+        "total": 18,
+        "strAbility": "str",
+        "dexAbility": "dex",
+        "bonuses": [
+          {
+            "type": "racial",
+            "value": 4,
+            "source": "Stability Racial",
+            "race": "Dwarf"
+          }
+        ],
+        "visible": true
+      },
+      "dirty trick": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "disarm": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "drag": {
+        "total": 18,
+        "strAbility": "str",
+        "dexAbility": "dex",
+        "bonuses": [
+          {
+            "type": "racial",
+            "value": 4,
+            "source": "Stability Racial",
+            "race": "Dwarf"
+          }
+        ],
+        "visible": true
+      },
+      "grapple": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "overrun": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex",
+        "bonuses": []
+      },
+      "reposition": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "steal": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "sunder": {
+        "total": 14,
+        "strAbility": "str",
+        "dexAbility": "dex"
+      },
+      "trip": {
+        "total": 18,
+        "strAbility": "str",
+        "dexAbility": "dex",
+        "bonuses": [
+          {
+            "type": "racial",
+            "value": 4,
+            "source": "Stability Racial",
+            "race": "Dwarf"
+          }
+        ],
+        "visible": true
+      }
+    },
+    "saves": {
+      "reflex": {
+        "bonuses": [],
+        "total": 1,
+        "ability": "dex",
+        "base": 0
+      },
+      "will": {
+        "bonuses": [],
+        "total": 2,
+        "ability": "wis",
+        "base": 2
+      },
+      "fort": {
+        "bonuses": [
+          {
+            "source": "Unstoppable",
+            "value": 1,
+            "type": "racial",
+            "race": "Dwarf"
+          }
+        ],
+        "total": 4,
+        "ability": "con",
+        "base": 2
+      }
+    },
+    "hp": {
+      "bonuses": [
+        {
+          "source": "Toughness",
+          "value": 3,
+          "featType": "General"
+        }
+      ],
+      "total": 12,
+      "current": 12
+    },
+    "resistances": {
+      "bonuses": []
+    },
+    "immunities": {
+      "bonuses": []
+    },
+    "dr": {
+      "bonuses": [],
+      "total": {}
+    }
+  },
+  "pools": {
+    "Bombs": {
+      "maxCharges": 4,
+      "currentCharges": 4,
+      "bonuses": []
+    },
+    "Arcane Pool": {
+      "maxCharges": 3,
+      "currentCharges": 3,
+      "bonuses": []
+    }
+  },
+  "spells": {
+    "Magus": {
+      "className": "Magus",
+      "spellKnowledge": "Known Spells",
+      "spellsPrepared": [
+        3,
+        2
+      ],
+      "casterLevel": 1,
+      "castingType": "prepared",
+      "spellList": "Magus",
+      "spellType": "arcane",
+      "baseSaveDC": 10,
+      "ability": "int",
+      "level0SpellName": "Cantrip",
+      "concentration": {
+        "total": 3
+      },
+      "knownSpells": {
+        "0": [
+          "Acid Splash",
+          "Arcane Mark",
+          "Dancing Lights",
+          "Daze",
+          "Detect Magic",
+          "Disrupt Undead",
+          "Flare",
+          "Ghost Sound",
+          "Light",
+          "Mage Hand",
+          "Open/Close",
+          "Prestidigitation",
+          "Ray of Frost",
+          "Read Magic",
+          "Spark",
+          "Detect Fiendish Presence",
+          "Grasp"
+        ],
+        "1": [
+          {
+            "name": "grease"
+          },
+          {
+            "name": "enlarge person"
+          },
+          {
+            "name": "shocking grasp"
+          }
+        ]
+      },
+      "preparedSpells": {
+        "0": [
+          {
+            "name": "Dancing Lights",
+            "school": "evocation",
+            "descriptor": "light",
+            "casting_time": "1 standard action",
+            "components": "V, S",
+            "range": "medium (100 ft. + 10 ft./level)",
+            "effect": "Up to four lights, all within a 10-ft.-radius area",
+            "duration": "1 minute",
+            "spell_resistence": "no",
+            "source": "PFRPG",
+            "short_description": "Creates torches or other lights.",
+            "material_costs": "NULL",
+            "level": 0,
+            "origLevel": "0",
+            "slots": 1,
+            "location": "both",
+            "spellLevel": 0,
+            "index": 1,
+            "attackType": "spell",
+            "casterClass": "Magus"
+          },
+          {
+            "name": "Detect Magic",
+            "school": "divination",
+            "casting_time": "1 standard action",
+            "components": "V, S",
+            "range": "60 ft.",
+            "area": "cone-shaped emanation",
+            "duration": "concentration, up to 1 min./level",
+            "spell_resistence": "no",
+            "source": "PFRPG",
+            "short_description": "Detects spells and magic items within 60 ft.",
+            "material_costs": "NULL",
+            "level": 0,
+            "origLevel": "0",
+            "slots": 1,
+            "location": "both",
+            "spellLevel": 0,
+            "index": 2,
+            "attackType": "spell",
+            "casterClass": "Magus"
+          },
+          {
+            "name": "Ray of Frost",
+            "school": "evocation",
+            "descriptor": "cold",
+            "casting_time": "1 standard action",
+            "components": "V, S",
+            "range": "close (25 ft. + 5 ft./2 levels)",
+            "effect": "ray",
+            "duration": "instantaneous",
+            "spell_resistence": "yes",
+            "damage": true,
+            "ranged_touch": true,
+            "source": "PFRPG",
+            "short_description": " Ray deals 1d3 cold damage.",
+            "material_costs": "NULL",
+            "level": 0,
+            "origLevel": "0",
+            "slots": 1,
+            "location": "both",
+            "spellLevel": 0,
+            "index": 0,
+            "attackType": "spell",
+            "casterClass": "Magus"
+          }
+        ],
+        "1": [
+          {
+            "name": "Enlarge Person",
+            "school": "transmutation",
+            "casting_time": "1 round",
+            "components": "V, S, M (powdered iron)",
+            "range": "close (25 ft. + 5 ft./2 levels)",
+            "targets": "one humanoid creature",
+            "duration": "1 min./level (D)",
+            "saving_throw": "Fortitude negates",
+            "spell_resistence": "yes",
+            "source": "PFRPG",
+            "short_description": " Humanoid creature doubles in size.",
+            "material_costs": "NULL",
+            "level": 1,
+            "origLevel": "1",
+            "slots": 1,
+            "location": "both",
+            "spellLevel": 1,
+            "index": 1,
+            "attackType": "spell",
+            "casterClass": "Magus"
+          },
+          {
+            "name": "Shocking Grasp",
+            "school": "evocation",
+            "descriptor": "electricity",
+            "casting_time": "1 standard action",
+            "components": "V, S",
+            "range": "touch",
+            "targets": "creature or object touched",
+            "duration": "instantaneous",
+            "spell_resistence": "yes",
+            "damage": true,
+            "augmentedLevel": 1,
+            "source": "PFRPG",
+            "short_description": "Touch delivers 1d6/level electricity damage (max 5d6). +3 to attack if the opponent is wearing metal armor, carrying a metal weapon or is made of metal.",
+            "material_costs": "NULL",
+            "level": 1,
+            "origLevel": "1",
+            "slots": 1,
+            "location": "both",
+            "spellLevel": 1,
+            "index": 2,
+            "attackType": "spell",
+            "casterClass": "Magus"
+          }
+        ]
+      }
+    }
+  },
+  "releaseNoteVersion": 0,
+  "equipment": {
+    "containers": [
+      {
+        "name": "Storage",
+        "containerCapacity": 0,
+        "itemsHaveNoWeight": true,
+        "index": "Storage"
+      },
+      {
+        "name": "Backpack",
+        "itemsHaveNoWeight": false,
+        "index": "adventuringGear2"
+      },
+      {
+        "name": "Belt Pouch",
+        "itemsHaveNoWeight": false,
+        "index": "adventuringGear3"
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Dwarven longhammer",
+        "group": "hammers",
+        "source": "Advanced Race Guide",
+        "damage": "2d6",
+        "critical": "x3",
+        "damageType": [
+          "B"
+        ],
+        "type": "two-handed",
+        "proficiency": "exotic",
+        "range": "",
+        "cost": 70,
+        "weight": 20,
+        "special": [
+          "reach"
+        ],
+        "size": "Medium",
+        "handedness": "two-handed",
+        "index": 0,
+        "bonuses": [
+          {
+            "source": "Tar Taargadth Trained",
+            "value": 1,
+            "type": "trait",
+            "appliesTo": "damage",
+            "_sourceModule": {
+              "name": "trait",
+              "type": "Combat"
+            }
+          }
+        ],
+        "secondaryBonuses": [
+          {
+            "source": "Tar Taargadth Trained",
+            "value": 1,
+            "type": "trait",
+            "appliesTo": "damage",
+            "_sourceModule": {
+              "name": "trait",
+              "type": "Combat"
+            }
+          }
+        ],
+        "enchantments": []
+      }
+    ],
+    "armor": [
+      {
+        "name": "Kikko",
+        "type": "medium",
+        "source": "Ultimate Equipment",
+        "ACBonus": "5",
+        "maxDexBonus": "4",
+        "ACPenalty": "-3",
+        "arcaneSpellFailure": "20%",
+        "speed": "20 ",
+        "cost": 250,
+        "weight": 25,
+        "size": "medium",
+        "equipped": "equipped",
+        "index": 0,
+        "bonuses": [
+          {
+            "source": "armor",
+            "value": 5,
+            "type": "armor",
+            "appliesTo": "ac"
+          },
+          {
+            "source": "armor",
+            "value": -3,
+            "appliesTo": "acPenalty"
+          },
+          {
+            "source": "armor",
+            "value": 20,
+            "appliesTo": "arcaneSpellFailure"
+          },
+          {
+            "source": "armor",
+            "value": 4,
+            "appliesTo": "maxDex"
+          }
+        ]
+      }
+    ],
+    "gold": 143,
+    "gear": [
+      {
+        "index": 0,
+        "value": "Tent (Medium)",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear2"
+      },
+      {
+        "index": 2,
+        "value": "Backpack",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear",
+        "equipped": true
+      },
+      {
+        "index": 3,
+        "value": "Belt Pouch",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear",
+        "equipped": false
+      },
+      {
+        "index": 4,
+        "value": "Blanket",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear2"
+      },
+      {
+        "index": 6,
+        "value": "Trail Rations",
+        "count": 5,
+        "category": "Food & Drink",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear2"
+      },
+      {
+        "index": 7,
+        "value": "Waterskin",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear"
+      },
+      {
+        "index": 8,
+        "value": "Mess Kit",
+        "count": 1,
+        "category": "Kits",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear2"
+      },
+      {
+        "index": 10,
+        "value": "Bedroll",
+        "count": 1,
+        "category": "Adventuring Gear",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear2"
+      },
+      {
+        "index": 11,
+        "value": "Spell Component Pouch",
+        "count": 1,
+        "category": "Tools",
+        "type": "gear",
+        "equipped": false,
+        "containerID": "adventuringGear3"
+      }
+    ],
+    "copper": 0,
+    "silver": 8
+  },
+  "numHeads": 1,
+  "numTails": 0,
+  "numWings": 0,
+  "numLegs": 2,
+  "numArms": 2,
+  "other": {
+    "bonuses": [
+      {
+        "source": "Weapon Familiarity Dwarf Racial",
+        "value": [
+          "Dwarven light axe-gauntlet",
+          "Dwarven boulder helmet",
+          "Dwarven maulaxe",
+          "Dwarven war-shield",
+          "Dwarven heavy axe-gauntlet",
+          "Dwarven ram hammer",
+          "Dwarven waraxe",
+          "Dwarven double waraxe",
+          "Dwarven dorn-dergar",
+          "Dwarven giant-sticker",
+          "Dwarven longaxe",
+          "Dwarven longhammer",
+          "Dwarven sphinx hammer",
+          "Dwarven urgrosh",
+          "Dwarven heavy pelletbow",
+          "Dwarven light pelletbow"
+        ],
+        "type": "martial",
+        "appliesTo": "weaponProficiency",
+        "race": "Dwarf"
+      },
+      {
+        "source": "Spellbooks (Magus)",
+        "type": "Magus",
+        "appliesTo": "Uses Spellbook",
+        "class": "Magus"
+      }
+    ]
+  },
+  "companions": [],
+  "releaseNotes": 34,
+  "selectedTab": "model",
+  "combatViewTab": "Combat",
+  "actionOrdering": {
+    "Combat": [
+      "equipmentequipment0",
+      "Spell CombatclassFeatureMagus",
+      "Arcane PoolclassFeatureMagus",
+      "Charge",
+      "Fight Defensively",
+      "Fight Defensively (Full Round)",
+      "Total Defense",
+      "Aid Another"
+    ]
+  },
+  "daily": {
+    "Spell Combat": 1,
+    "Arcane Pool": 0,
+    "Magus02": 1,
+    "Charge": 1,
+    "Magus00": 1
+  },
+  "effects": [],
+  "collapsedSections": {
+    "Custom Bonuses/Penalties": true
+  },
+  "_Permissions": "Public",
+  "settings": {
+    "showModel": true,
+    "opacity": 75,
+    "saturation": 100
+  }
+}

@@ -1,0 +1,23 @@
+.ascandir-import .ascandir-warning {
+  padding: 6px 8px;
+  border: 1px solid var(--color-level-warning, #ee9b3a);
+  border-radius: 4px;
+}
+.ascandir-import textarea {
+  width: 100%;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+}
+.ascandir-import .hint {
+  margin: 0 0 6px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+.ascandir-report ul {
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 4px 0 10px;
+}
+.ascandir-import-button {
+  flex: 0 0 100%;
+}
