@@ -6,8 +6,8 @@
  * window lets you pick the source (currently Path Companion) and paste/select the
  * export. New sources can be added with `registerImporter`.
  */
-import { MODULE_ID, esc, resetIndex } from "./common.js";
-import { pathCompanionImporter } from "./importers/pathcompanion.js";
+import { MODULE_ID, esc, resetIndex } from "./common.js?v=0.1.3";
+import { pathCompanionImporter } from "./importers/pathcompanion.js?v=0.1.3";
 
 const LABEL = "Ascandir Import";
 const ICON = "fa-solid fa-file-import";
@@ -35,6 +35,7 @@ registerImporter(pathCompanionImporter);
 Hooks.once("init", () => {
   const mod = game.modules.get(MODULE_ID);
   if (mod) mod.api = { registerImporter, openImportDialog, importers, resetIndex };
+  console.log(`${MODULE_ID} | Version ${mod?.version} geladen`);
 });
 
 /* -------------------------------------------- */
@@ -134,7 +135,10 @@ export async function openImportDialog(actor = null) {
     </div>`;
 
   const result = await foundry.applications.api.DialogV2.wait({
-    window: { title: actor ? `${LABEL}: ${actor.name}` : LABEL, icon: ICON },
+    window: {
+      title: `${actor ? `${LABEL}: ${actor.name}` : LABEL} (v${game.modules.get(MODULE_ID)?.version ?? "?"})`,
+      icon: ICON,
+    },
     position: { width: 520 },
     content,
     buttons: [

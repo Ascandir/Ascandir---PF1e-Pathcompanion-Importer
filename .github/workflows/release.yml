@@ -32,6 +32,15 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check script version stamps
+        if: steps.version.outputs.exists == 'false'
+        run: |
+          V="$(jq -r .version module.json)"
+          if grep -rEn 'from "\.{1,2}/[^"]+\.js(\?v=[^"]*)?"' scripts | grep -v "?v=$V\""; then
+            echo "Imports nicht auf Version $V – bitte 'node tools/set-version.mjs $V' ausführen."
+            exit 1
+          fi
+
       - name: Test
         if: steps.version.outputs.exists == 'false'
         run: node test/run.mjs

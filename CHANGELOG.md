@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+- Nach einem Update lädt Foundry jetzt zuverlässig die neuen Skriptdateien (vorher konnte der Browser die alte Fassung weiterverwenden).
+- Das Import-Fenster zeigt die Modulversion im Titel.
+
 ## 0.1.2
 - Bonus-Talente aus Volksmerkmalen/Klassenfähigkeiten (z. B. Toughness aus „Unstoppable“) werden nicht mehr doppelt angelegt, wenn das PF1-Merkmal den Effekt schon enthält (TP waren zu hoch).
 - Waffen und Rüstungen, für die der Charakter eine Übung hat, werden zusätzlich direkt als „geübt“ markiert.

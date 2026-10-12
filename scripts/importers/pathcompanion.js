@@ -5,8 +5,8 @@ import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
   traitUpdate, matchConfigKeys,
-} from "../common.js";
-import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js";
+} from "../common.js?v=0.1.3";
+import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.3";
 
 const BOOK_KEYS = ["primary", "secondary", "tertiary", "spelllike"];
 
