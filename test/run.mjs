@@ -39,6 +39,7 @@ assert(actor._source.system.traits.weaponProf.includes("Dwarven Longhammer"), "�
 assert(actor._source.system.traits.weaponProf.includes("Warhammer"), "Übung Kriegshammer (Volk)");
 assert(!names.includes("Medium Armor Proficiency"), "Kein Platzhalter-Talent für Rüstungsübung");
 assert(names.includes("Backpack, Common"), "Rucksack gefunden (Backpack, Common)");
+assert(names.includes("Stability (Dwarf)") && !names.includes("Stability"), "Volksmerkmal: Zwergen-Version statt allgemeinem Eintrag");
 assert(names.filter((n) => n === "Toughness").length === 1, "Toughness genau einmal (trotz automatischem Anhang durch Unstoppable)");
 assert(actor.items.find((i) => i.type === "weapon").system.proficient === true, "Langhammer als geübt markiert");
 assert(actor.items.find((i) => i.name === "Kikko").system.proficient === true, "Kikko als geübt markiert");

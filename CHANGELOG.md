@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.6
+- Volksmerkmale: Die Version mit Volksnamen (z. B. „Hatred (Dwarf)“) wird vor allgemeinen Einträgen gleichen Namens bevorzugt, damit die PF1-Effekte mitkommen.
+
 ## 0.1.5
 - Talente, die PF1 über ein Volksmerkmal oder eine Klassenfähigkeit automatisch anhängt (z. B. Toughness über „Unstoppable“), werden nicht mehr doppelt geführt – TP waren dadurch zu hoch.
 

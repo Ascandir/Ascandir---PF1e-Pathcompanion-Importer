@@ -56,6 +56,8 @@ U.hardy = addDoc("Hardy", "feat", { subType: "racial" });
 U.darkvision = addDoc("Darkvision", "feat", { subType: "racial", tags: ["Dwarf"] });
 U.hatred = addDoc("Hatred", "feat", { subType: "racial", tags: ["Dwarf"] });
 addDoc("Hatred", "feat", { subType: "racial", tags: ["Gnome"] });
+addDoc("Stability", "feat", { subType: "racial" });
+addDoc("Stability (Dwarf)", "feat", { subType: "racial", changes: [{ formula: "4", target: "cmd" }] });
 U.dwarf = addDoc("Dwarf", "race", {
   changes: [
     { formula: "2", target: "con", type: "racial" },

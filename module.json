@@ -2,7 +2,7 @@
   "id": "ascandir-pf1e-pathcompanion-importer",
   "title": "Ascandir - PF1e Pathcompanion Importer",
   "description": "Importiert Charaktere aus Path Companion (pathcompanion.com) samt Archetypen, Talenten, Wesenszügen, Zaubern und Ausrüstung in das Pathfinder-1e-System. Weitere Charakterbuilder können als Quellen ergänzt werden.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "authors": [
     {
       "name": "Ascandir"

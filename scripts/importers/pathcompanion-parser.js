@@ -1,4 +1,4 @@
-import { norm } from "../common.js?v=0.1.5";
+import { norm } from "../common.js?v=0.1.6";
 
 /**
  * Pure parsing logic: turns a Path Companion character export (JSON) into an

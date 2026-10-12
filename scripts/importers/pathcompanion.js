@@ -5,8 +5,8 @@ import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
   traitUpdate, matchConfigKeys,
-} from "../common.js?v=0.1.5";
-import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.5";
+} from "../common.js?v=0.1.6";
+import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.6";
 
 const BOOK_KEYS = ["primary", "secondary", "tertiary", "spelllike"];
 
@@ -161,11 +161,13 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
 
   /* ---------- Racial traits ---------- */
   for (const t of plan.race?.traits ?? []) {
+    // Prefer the race-specific version ("Hatred (Dwarf)") over generic entries of the same name.
+    const specific = `${t.name} (${plan.race.name})`;
     let hit = null;
-    const uuid = raceSupplements.get(norm(t.name));
+    const uuid = raceSupplements.get(norm(specific)) ?? raceSupplements.get(norm(t.name));
     if (uuid) hit = { uuid };
     if (!hit) {
-      hit = await findEntry([t.name, `${t.name} (${plan.race.name})`],
+      hit = await findEntry([specific, t.name],
         { types: ["feat"], subTypes: ["racial"], context: plan.race.name });
     }
     const res = await takeOrPlaceholder(`Volksmerkmal: ${t.name}`, hit, placeholder(t.name, "feat", { subType: "racial" }));

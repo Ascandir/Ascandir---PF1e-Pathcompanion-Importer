@@ -6,8 +6,8 @@
  * window lets you pick the source (currently Path Companion) and paste/select the
  * export. New sources can be added with `registerImporter`.
  */
-import { MODULE_ID, esc, resetIndex } from "./common.js?v=0.1.5";
-import { pathCompanionImporter } from "./importers/pathcompanion.js?v=0.1.5";
+import { MODULE_ID, esc, resetIndex } from "./common.js?v=0.1.6";
+import { pathCompanionImporter } from "./importers/pathcompanion.js?v=0.1.6";
 
 const LABEL = "Ascandir Import";
 const ICON = "fa-solid fa-file-import";
