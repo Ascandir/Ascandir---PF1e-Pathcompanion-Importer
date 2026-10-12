@@ -71,5 +71,5 @@ Hilfsfunktionen für Kompendium-Suche, Platzhalter und Bericht liegen in `script
 `node test/run.mjs` spielt einen Beispielimport (`test/durgan.json`) gegen eine
 Foundry-Attrappe durch und prüft die wichtigsten Ergebnisse.
 
-Neue Version veröffentlichen: auf GitHub ein Release mit Tag `vX.Y.Z` erstellen – der Workflow
+Neue Version veröffentlichen: einen Tag `vX.Y.Z` pushen – der Workflow erstellt das Release,
 baut `module.zip` und `module.json` und hängt sie an.
