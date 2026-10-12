@@ -4,6 +4,7 @@
 import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
+  traitUpdate, matchConfigKeys,
 } from "../common.js";
 import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js";
 
@@ -204,7 +205,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     });
   }
   for (const g of plan.gear) {
-    const hit = await findEntry([g.name], { types: ["loot", "equipment", "consumable", "container", "weapon", "implant"] });
+    const hit = await findEntry([g.name], { types: ["loot", "equipment", "consumable", "container", "weapon", "implant"], prefix: true });
     await takeOrPlaceholder(`Gegenstand: ${g.name}`, hit, placeholder(g.name, "loot", { subType: "gear" }), (d) => {
       setProp(d, "system.quantity", g.quantity);
       if (g.equipped && ["equipment", "container"].includes(d.type)) setProp(d, "system.equipped", true);
@@ -279,7 +280,29 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
 
   for (const [k, v] of Object.entries(plan.currency)) update[`system.currency.${k}`] = v;
 
-  Object.assign(update, languageUpdate(actor, plan.languages, report));
+  const pf1cfg = globalThis.pf1?.config ?? CONFIG.PF1 ?? {};
+  const langs = matchConfigKeys(plan.languages, pf1cfg.languages);
+  Object.assign(update, traitUpdate(actor, "system.traits.languages", langs.keys, langs.custom));
+
+  // Armor & weapon proficiencies (feats like "Medium Armor Proficiency", Weapon Familiarity, …)
+  const profs = plan.proficiencies ?? { armor: [], weapon: [], weaponCustom: [] };
+  Object.assign(update, traitUpdate(actor, "system.traits.armorProf", profs.armor, []));
+  const weaponNamed = matchConfigKeys(profs.weaponCustom, pf1cfg.weaponProficiencies);
+  // Use the compendium spelling so PF1 can match the proficiency to the weapon item.
+  for (let i = 0; i < weaponNamed.custom.length; i++) {
+    const hit = await findEntry([weaponNamed.custom[i]], { types: ["weapon"] });
+    if (hit?.name) weaponNamed.custom[i] = hit.name;
+  }
+  Object.assign(update, traitUpdate(actor, "system.traits.weaponProf",
+    [...profs.weapon, ...weaponNamed.keys], weaponNamed.custom));
+  const armorLabels = { lgt: "leichte Rüstung", med: "mittelschwere Rüstung", hvy: "schwere Rüstung", shl: "Schilde", twr: "Turmschilde" };
+  const weaponLabels = { sim: "einfache Waffen", mar: "Kriegswaffen" };
+  const profText = [
+    ...profs.armor.map((k) => armorLabels[k] ?? k),
+    ...profs.weapon.map((k) => weaponLabels[k] ?? k),
+    ...profs.weaponCustom,
+  ];
+  if (profText.length) report.found.push(`Übungen: ${profText.join(", ")}`);
   update["system.details.biography.value"] = biography(plan);
 
   await actor.update(update);
@@ -312,37 +335,6 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   actor.sheet?.render(true);
   await showReport(`Path Companion Import: ${plan.name}`, report);
   return actor;
-}
-
-/** Builds the language update, adapting to the system's data layout. */
-function languageUpdate(actor, languages, report) {
-  if (!languages?.length) return {};
-  const cfg = globalThis.pf1?.config?.languages ?? CONFIG.PF1?.languages ?? {};
-  const lookup = new Map();
-  for (const [key, label] of Object.entries(cfg)) {
-    lookup.set(norm(key), key);
-    lookup.set(norm(game.i18n.localize(String(label))), key);
-  }
-  const known = [];
-  const custom = [];
-  for (const l of languages) {
-    const key = lookup.get(norm(l));
-    if (key) {
-      if (!known.includes(key)) known.push(key);
-    } else custom.push(l);
-  }
-
-  const src = actor._source?.system?.traits?.languages;
-  if (!src || typeof src !== "object" || Array.isArray(src)) {
-    report.notes.push(`Sprachen bitte manuell eintragen: ${languages.join(", ")}`);
-    return {};
-  }
-  const listKey = "base" in src ? "base" : "value";
-  const customVal = Array.isArray(src.custom) ? custom : custom.join(";");
-  return {
-    [`system.traits.languages.${listKey}`]: known,
-    "system.traits.languages.custom": customVal,
-  };
 }
 
 function biography(plan) {

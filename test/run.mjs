@@ -33,7 +33,12 @@ assert(actor._source.system.abilities.str.value === 16, "STR 16");
 assert(actor._source.system.skills.kar.rank === 1, "Wissen (Arkanes) 1 Rang");
 assert(actor._source.system.attributes.spells.spellbooks.primary.class === "magus", "Zauberbuch primary = magus");
 assert(actor._source.system.currency.gp === 143, "143 GM");
-assert(actor._source.system.traits.languages.base.length === 4, "4 Sprachen");
+assert(actor._source.system.traits.languages.length === 4, "4 Sprachen");
+assert(actor._source.system.traits.armorProf.includes("med"), "Übung mittelschwere Rüstung");
+assert(actor._source.system.traits.weaponProf.includes("Dwarven Longhammer"), "Übung Zwergen-Langhammer (Schreibweise wie im Kompendium) (Weapon Familiarity)");
+assert(actor._source.system.traits.weaponProf.includes("Warhammer"), "Übung Kriegshammer (Volk)");
+assert(!names.includes("Medium Armor Proficiency"), "Kein Platzhalter-Talent für Rüstungsübung");
+assert(names.includes("Backpack, Common"), "Rucksack gefunden (Backpack, Common)");
 assert(actor.items.find((i) => i.type === "class").system.links.classAssociations.length === 4, "Klassen-Verknüpfungen wiederhergestellt");
 
 // --- Sheet menu entry + re-import into the same (existing) actor ---
@@ -49,4 +54,12 @@ assert(buttons[0]?.label === "Ascandir", "Titelleisten-Knopf für ältere Bögen
 
 const before = actor.items.length;
 await importPathCompanion(json, { actor });
+assert(actor._source.system.traits.weaponProf.length === new Set(actor._source.system.traits.weaponProf).size
+  && JSON.stringify(actor._source.system.traits.armorProf) === JSON.stringify(["lgt", "med"]), "Übungen nach erneutem Import nicht doppelt");
 assert(actor.items.length === before, `Zweiter Import in denselben Bogen: keine Duplikate (${actor.items.length} Einträge)`);
+
+// traitUpdate with the older object layout ({value, custom: "a;b"})
+const { traitUpdate } = await import("../scripts/common.js");
+const old = { _source: { system: { traits: { languages: { value: ["common"], custom: "Gnoll" } } } } };
+const u = traitUpdate(old, "system.traits.languages", ["dwarven"], ["Undercommon"]);
+assert(JSON.stringify(u) === JSON.stringify({ "system.traits.languages.value": ["common", "dwarven"], "system.traits.languages.custom": "Gnoll;Undercommon" }), "traitUpdate: altes Objekt-Format");

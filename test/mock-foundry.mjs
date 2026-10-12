@@ -73,7 +73,8 @@ addDoc("Detect Magic", "spell", { level: 0 });
 addDoc("Ray of Frost", "spell", { level: 0 });
 addDoc("Dwarven Longhammer", "weapon", { subType: "exotic" });
 addDoc("Kikko", "equipment", { subType: "armor" });
-addDoc("Backpack", "container", {});
+addDoc("Backpack, Common", "container", {});
+addDoc("Backpack, Masterwork", "container", {});
 addDoc("Tent, Medium", "loot", { subType: "gear" });
 addDoc("Spell Component Pouch", "loot", { subType: "gear" });
 
@@ -118,7 +119,7 @@ class FakeActor {
     this._source = {
       system: {
         skills: { acr: { rank: 0 }, crf: { rank: 0, subSkills: {} }, kar: { rank: 0 } },
-        traits: { languages: { base: [], custom: [] } },
+        traits: { languages: [], armorProf: [], weaponProf: [] },
       },
     };
     this.itemMap = new Map();
@@ -196,6 +197,6 @@ globalThis.game = {
   modules: new Map(),
 };
 globalThis.ui = { notifications: { info: () => ({}), warn: console.warn, error: console.error } };
-globalThis.CONFIG = { PF1: { languages: { common: "Common", dwarven: "Dwarven", elven: "Elven", orc: "Orc" } } };
+globalThis.CONFIG = { PF1: { languages: { common: "Common", dwarven: "Dwarven", elven: "Elven", orc: "Orc" }, weaponProficiencies: { sim: "Simple", mar: "Martial" } } };
 globalThis.fromUuid = async (u) => docFromUuid(u);
 globalThis.fromUuidSync = (u) => docFromUuid(u);

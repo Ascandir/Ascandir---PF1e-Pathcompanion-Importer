@@ -79,6 +79,33 @@ const OPTIONAL_FEATURE_PATTERNS = [
   /^weapon and armor proficiency$/i,
 ];
 
+/** PF1 trait keys for armor / weapon proficiencies. */
+const ARMOR_PROF = {
+  "light armor proficiency": "lgt",
+  "medium armor proficiency": "med",
+  "heavy armor proficiency": "hvy",
+  "shield proficiency": "shl",
+  "tower shield proficiency": "twr",
+};
+
+/**
+ * Recognizes proficiency "feats", which PF1 stores as actor traits instead of items.
+ * @returns {{armor?: string, weapon?: string, weaponCustom?: string} | null}
+ */
+export function parseProficiencyFeat(name) {
+  const n = norm(name);
+  if (ARMOR_PROF[n]) return { armor: ARMOR_PROF[n] };
+  if (n === "simple weapon proficiency") return { weapon: "sim" };
+  const m = String(name ?? "").match(/^(martial|exotic|simple) weapon proficiency\s*(?:\((.*)\))?$/i);
+  if (m) {
+    const kind = m[1].toLowerCase();
+    const what = (m[2] ?? "").trim();
+    if (!what || /^all$/i.test(what)) return kind === "exotic" ? null : { weapon: kind === "martial" ? "mar" : "sim" };
+    return { weaponCustom: what };
+  }
+  return null;
+}
+
 export function isOptionalFeature(name) {
   return OPTIONAL_FEATURE_PATTERNS.some((re) => re.test(String(name ?? "").trim()));
 }
@@ -167,6 +194,7 @@ export function buildPlan(pc) {
 
   const classMap = new Map();
   const seenFeats = new Set();
+  const profs = { armor: new Set(), weapon: new Set(), weaponCustom: new Set() };
   for (const lk of levelKeys) {
     const lv = levelInfo[lk];
     if (!lv?.class) continue;
@@ -209,9 +237,21 @@ export function buildPlan(pc) {
       });
     }
 
+    for (const p of lv.Proficiencies ?? []) {
+      if (p?.name) profs.weaponCustom.add(p.name);
+    }
+
     for (const ft of lv.Feats ?? []) {
       if (!ft?.name) continue;
-      // Proficiencies granted by the class itself are set on the PF1 class item.
+      // Proficiency "feats" are traits on the PF1 actor, not items.
+      const prof = parseProficiencyFeat(ft.name);
+      if (prof) {
+        if (prof.armor) profs.armor.add(prof.armor);
+        if (prof.weapon) profs.weapon.add(prof.weapon);
+        if (prof.weaponCustom) profs.weaponCustom.add(prof.weaponCustom);
+        continue;
+      }
+      // Other feats granted by the class itself are covered by the PF1 class item.
       if (String(ft.source ?? "").toLowerCase() === "class") continue;
       const key = norm(ft.name);
       if (seenFeats.has(key)) continue;
@@ -220,6 +260,19 @@ export function buildPlan(pc) {
     }
   }
   if (!plan.classes.length) notes.push("Keine Klassenstufen in der Datei gefunden.");
+
+  // Extra weapon proficiencies, e.g. dwarven Weapon Familiarity.
+  for (const b of pc.other?.bonuses ?? []) {
+    if (b?.appliesTo !== "weaponProficiency") continue;
+    for (const w of Array.isArray(b.value) ? b.value : [b.value]) {
+      if (typeof w === "string" && w) profs.weaponCustom.add(w);
+    }
+  }
+  plan.proficiencies = {
+    armor: [...profs.armor],
+    weapon: [...profs.weapon],
+    weaponCustom: [...profs.weaponCustom],
+  };
 
   // --- Traits & languages ---------------------------------------------------
   for (const t of info.traits ?? []) {
