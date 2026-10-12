@@ -266,8 +266,9 @@ export async function showReport(title, report) {
   if (report.skipped.length) content += `<p>Übersprungen (reine Verwaltungseinträge):</p>${list(report.skipped)}`;
   if (report.notes.length) content += `<p>Hinweise:</p>${list(report.notes)}`;
   console.log(`${MODULE_ID} | Import-Bericht: ${title}`, report);
+  const version = game.modules?.get?.(MODULE_ID)?.version;
   await foundry.applications.api.DialogV2.prompt({
-    window: { title },
+    window: { title: version ? `${title} (v${version})` : title },
     position: { width: 520 },
     content: `<div class="ascandir-report">${content}</div>`,
     ok: { label: "OK" },

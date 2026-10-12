@@ -65,7 +65,13 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     }
     if (mutate) mutate(data);
     created.push(data);
+    return { data, found: data !== fallback };
   };
+  // Class features / racial traits taken from a compendium, by name (to detect feats they already grant).
+  const grantingItems = new Map();
+  const changeTargets = (d) => (d?.system?.changes ?? [])
+    .map((c) => (c?.target === "ability" ? c.subTarget : c?.target))
+    .filter(Boolean);
 
   /* ---------- Race ---------- */
   let raceSupplements = new Map();
@@ -147,8 +153,9 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
         report.skipped.push(label);
         continue;
       }
-      await takeOrPlaceholder(label, hit,
+      const res = await takeOrPlaceholder(label, hit,
         placeholder(f.name, "feat", { subType: "classFeat", abilityType: abilityType(f.type) }));
+      if (res.found) grantingItems.set(norm(f.name), res.data);
     }
   }
 
@@ -161,12 +168,25 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
       hit = await findEntry([t.name, `${t.name} (${plan.race.name})`],
         { types: ["feat"], subTypes: ["racial"], context: plan.race.name });
     }
-    await takeOrPlaceholder(`Volksmerkmal: ${t.name}`, hit, placeholder(t.name, "feat", { subType: "racial" }));
+    const res = await takeOrPlaceholder(`Volksmerkmal: ${t.name}`, hit, placeholder(t.name, "feat", { subType: "racial" }));
+    if (res.found) grantingItems.set(norm(t.name), res.data);
   }
 
   /* ---------- Feats & traits ---------- */
   for (const ft of plan.feats) {
     const hit = await findEntry([ft.name], { types: ["feat"], subTypes: ["feat"] });
+    // Bonus feats granted by a racial trait / class feature (e.g. Toughness from "Unstoppable"):
+    // skip them if the PF1 item of that source already applies the same effects.
+    const granting = ft.source ? grantingItems.get(norm(ft.source)) : null;
+    if (granting && hit) {
+      const featData = await itemDataFromUuid(hit.uuid);
+      const featTargets = changeTargets(featData);
+      const sourceTargets = changeTargets(granting);
+      if (featTargets.length && featTargets.every((t) => sourceTargets.includes(t))) {
+        report.notes.push(`${ft.name} nicht separat angelegt – wirkt bereits über „${granting.name}“.`);
+        continue;
+      }
+    }
     await takeOrPlaceholder(`Talent: ${ft.name}`, hit, placeholder(ft.name, "feat", { subType: "feat" }));
   }
   for (const tr of plan.traits) {
@@ -177,6 +197,10 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   }
 
   /* ---------- Equipment ---------- */
+  const profs = plan.proficiencies ?? { armor: [], weapon: [], weaponCustom: [] };
+  const namedWeaponProfs = new Set(profs.weaponCustom.map((n) => norm(n)));
+  const weaponCategory = { simple: "sim", martial: "mar" };
+  const armorCategory = { light: "lgt", medium: "med", heavy: "hvy", shield: "shl", tower: "twr" };
   for (const w of plan.weapons) {
     const hit = await findEntry([w.name], { types: ["weapon"] });
     const fb = placeholder(w.name, "weapon", {
@@ -185,6 +209,8 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     await takeOrPlaceholder(`Waffe: ${w.name}`, hit, fb, (d) => {
       setProp(d, "system.quantity", w.quantity);
       setProp(d, "system.equipped", w.equipped);
+      if (namedWeaponProfs.has(norm(w.name)) || namedWeaponProfs.has(norm(d.name))
+        || profs.weapon.includes(weaponCategory[w.proficiency])) setProp(d, "system.proficient", true);
       if (w.masterwork) setProp(d, "system.masterwork", true);
       if (w.enhancement) setProp(d, "system.enh", w.enhancement);
     });
@@ -200,6 +226,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     });
     await takeOrPlaceholder(`Rüstung: ${a.name}`, hit, fb, (d) => {
       setProp(d, "system.equipped", a.equipped);
+      if (profs.armor.includes(armorCategory[a.type])) setProp(d, "system.proficient", true);
       if (a.masterwork) setProp(d, "system.masterwork", true);
       if (a.enhancement) setProp(d, "system.armor.enh", a.enhancement);
     });
@@ -285,7 +312,6 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   Object.assign(update, traitUpdate(actor, "system.traits.languages", langs.keys, langs.custom));
 
   // Armor & weapon proficiencies (feats like "Medium Armor Proficiency", Weapon Familiarity, …)
-  const profs = plan.proficiencies ?? { armor: [], weapon: [], weaponCustom: [] };
   Object.assign(update, traitUpdate(actor, "system.traits.armorProf", profs.armor, []));
   const weaponNamed = matchConfigKeys(profs.weaponCustom, pf1cfg.weaponProficiencies);
   // Use the compendium spelling so PF1 can match the proficiency to the weapon item.

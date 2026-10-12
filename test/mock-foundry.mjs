@@ -64,7 +64,8 @@ U.dwarf = addDoc("Dwarf", "race", {
   ],
   links: { supplements: [{ uuid: U.hardy }, { uuid: U.darkvision }, { uuid: U.hatred }] },
 });
-addDoc("Toughness", "feat", { subType: "feat" });
+addDoc("Toughness", "feat", { subType: "feat", changes: [{ formula: "max(3, @attributes.hd.total)", target: "mhp" }] });
+U.unstoppable = addDoc("Unstoppable", "feat", { subType: "racial", changes: [{ formula: "1", target: "fort" }, { formula: "max(3, @attributes.hd.total)", target: "mhp" }] });
 addDoc("Medium Armor Proficiency", "feat", { subType: "feat" });
 addDoc("Shocking Grasp", "spell", { level: 1 });
 addDoc("Enlarge Person", "spell", { level: 1 });
