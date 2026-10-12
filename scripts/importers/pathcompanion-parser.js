@@ -1,4 +1,4 @@
-import { norm } from "../common.js?v=0.1.6";
+import { norm } from "../common.js?v=0.2.0";
 
 /**
  * Pure parsing logic: turns a Path Companion character export (JSON) into an
@@ -344,9 +344,18 @@ export function buildPlan(pc) {
 
   // --- Equipment ---------------------------------------------------------------
   const eq = pc.equipment ?? {};
+  // Every equipment entry gets a reference; `containerID` links it to a container (see below).
+  let refCounter = 0;
+  const entries = []; // { entry, sourceKey, containerID }
+  const track = (entry, sourceKey, raw) => {
+    entry.ref = `e${refCounter++}`;
+    entry.parent = null;
+    entries.push({ entry, sourceKey, containerID: raw?.containerID ?? null });
+    return entry;
+  };
   for (const w of eq.weapons ?? []) {
     if (!w?.name) continue;
-    plan.weapons.push({
+    plan.weapons.push(track({
       name: w.name,
       quantity: num(w.count ?? w.quantity, 1) || 1,
       equipped: w.equipped !== false,
@@ -357,11 +366,11 @@ export function buildPlan(pc) {
       damage: w.damage ?? "",
       critical: w.critical ?? "",
       hasEnchantments: Array.isArray(w.enchantments) && w.enchantments.length > 0,
-    });
+    }, `weapons${w.index}`, w));
   }
   for (const a of eq.armor ?? []) {
     if (!a?.name) continue;
-    plan.armor.push({
+    plan.armor.push(track({
       name: a.name,
       equipped: a.equipped === true || a.equipped === "equipped",
       type: String(a.type ?? "").toLowerCase(),
@@ -371,23 +380,43 @@ export function buildPlan(pc) {
       spellFailure: num(String(a.arcaneSpellFailure ?? "0").replace("%", "")),
       enhancement: num(a.enhancement ?? a.enhancementBonus),
       masterwork: !!a.masterwork,
-    });
+    }, `armor${a.index}`, a));
   }
-  const pushGear = (g) => {
+  const pushGear = (g, listKey) => {
     const name = g?.value ?? g?.name;
     if (!name || typeof name !== "string") return;
-    plan.gear.push({
+    plan.gear.push(track({
       name,
       quantity: num(g.count ?? g.quantity, 1) || 1,
       equipped: g.equipped === true || g.equipped === "equipped",
       category: g.category ?? "",
-    });
+    }, `${listKey}${g.index}`, g));
   };
-  for (const g of eq.gear ?? []) pushGear(g);
+  for (const g of eq.gear ?? []) pushGear(g, "adventuringGear");
   // Any further lists (magic items, wondrous items, …) are imported as gear.
   for (const [key, list] of Object.entries(eq)) {
     if (["containers", "weapons", "armor", "gear"].includes(key)) continue;
-    if (Array.isArray(list)) list.forEach(pushGear);
+    if (Array.isArray(list)) list.forEach((g) => pushGear(g, key));
+  }
+
+  // Containers: Path Companion lists them with an index like "adventuringGear2", which points
+  // at the gear entry that *is* the container (here: the backpack). Fall back to the name.
+  const containerRef = new Map(); // container index -> ref of the container item
+  for (const c of eq.containers ?? []) {
+    if (!c?.index) continue;
+    const match = entries.find((e) => e.sourceKey === c.index)
+      ?? entries.find((e) => norm(e.entry.name) === norm(c.name));
+    if (match) containerRef.set(c.index, match.entry.ref);
+  }
+  const unplaced = [];
+  for (const { entry, containerID } of entries) {
+    if (!containerID) continue;
+    const parent = containerRef.get(containerID);
+    if (parent && parent !== entry.ref) entry.parent = parent;
+    else unplaced.push(entry.name);
+  }
+  if (unplaced.length) {
+    notes.push(`Ohne passenden Behälter, liegen direkt im Inventar: ${unplaced.join(", ")}`);
   }
 
   plan.currency = {
@@ -397,9 +426,6 @@ export function buildPlan(pc) {
     cp: num(eq.copper),
   };
 
-  if ((eq.containers ?? []).some((c) => c?.index !== "Storage")) {
-    notes.push("Behälter (z. B. Rucksack) werden nicht nachgebaut, alle Gegenstände liegen direkt im Inventar.");
-  }
 
   return plan;
 }

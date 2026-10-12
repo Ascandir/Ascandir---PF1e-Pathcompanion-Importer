@@ -40,6 +40,12 @@ assert(actor._source.system.traits.weaponProf.includes("Warhammer"), "Übung Kri
 assert(!names.includes("Medium Armor Proficiency"), "Kein Platzhalter-Talent für Rüstungsübung");
 assert(names.includes("Backpack, Common"), "Rucksack gefunden (Backpack, Common)");
 assert(names.includes("Stability (Dwarf)") && !names.includes("Stability"), "Volksmerkmal: Zwergen-Version statt allgemeinem Eintrag");
+const backpack = actor.items.find((i) => i.name === "Backpack, Common");
+const inBackpack = Object.values(backpack.system.items ?? {}).map((i) => i.name).sort();
+assert(JSON.stringify(inBackpack) === JSON.stringify(["Bedroll", "Blanket", "Mess Kit", "Tent, Medium", "Trail Rations"]), `Rucksack-Inhalt: ${inBackpack.join(", ")}`);
+const pouch = actor.items.find((i) => i.name === "Belt Pouch");
+assert(Object.values(pouch.system.items ?? {}).map((i) => i.name).join() === "Spell Component Pouch", "Gürtelbeutel enthält Spell Component Pouch");
+assert(!names.includes("Blanket") && names.includes("Waterskin"), "Behälter-Inhalt nicht zusätzlich im Inventar, Wasserschlauch schon");
 assert(names.filter((n) => n === "Toughness").length === 1, "Toughness genau einmal (trotz automatischem Anhang durch Unstoppable)");
 assert(actor.items.find((i) => i.type === "weapon").system.proficient === true, "Langhammer als geübt markiert");
 assert(actor.items.find((i) => i.name === "Kikko").system.proficient === true, "Kikko als geübt markiert");

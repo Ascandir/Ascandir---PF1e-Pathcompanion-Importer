@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.0
+- Behälter: Gegenstände werden in denselben Behälter gelegt wie in Path Companion (z. B. Zelt, Decke und Rationen in den Rucksack, Zauberkomponenten in den Gürtelbeutel).
+
 ## 0.1.6
 - Volksmerkmale: Die Version mit Volksnamen (z. B. „Hatred (Dwarf)“) wird vor allgemeinen Einträgen gleichen Namens bevorzugt, damit die PF1-Effekte mitkommen.
 

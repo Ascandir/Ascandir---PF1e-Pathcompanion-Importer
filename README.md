@@ -41,12 +41,12 @@ Am Ende zeigt ein Bericht, was aus den Kompendien übernommen wurde und was nur 
   normale Fähigkeit. Ersetzte Grundfähigkeiten werden nicht hinzugefügt.
 - **Volk:** Rassenboni rechnet das PF1-Volk selbst ein; alternative Volksmerkmale werden
   übernommen, die ersetzten Standardmerkmale nicht.
+- **Behälter:** Gegenstände landen im selben Behälter wie in Path Companion (Rucksack, Gürtelbeutel …).
 - Klassenverknüpfungen bleiben erhalten, d. h. Stufenaufstiege in Foundry funktionieren wie
   gewohnt (ersetzte Archetyp-Fähigkeiten bei späteren Stufen bitte selbst anpassen).
 
 ## Bekannte Grenzen
 
-- Behälter (Rucksack usw.) werden nicht nachgebaut, alle Gegenstände liegen im Inventar.
 - Magische Waffeneigenschaften und eigene Boni aus Path Companion müssen von Hand eingetragen werden.
 - Inhalte, die in keinem Kompendium existieren (Homebrew, seltene Bücher), werden Platzhalter.
 

@@ -80,6 +80,8 @@ addDoc("Backpack, Common", "container", {});
 addDoc("Backpack, Masterwork", "container", {});
 addDoc("Tent, Medium", "loot", { subType: "gear" });
 addDoc("Spell Component Pouch", "loot", { subType: "gear" });
+addDoc("Belt Pouch", "container", {});
+addDoc("Blanket", "loot", { subType: "gear" });
 
 const pack = {
   collection: PACK,
@@ -189,7 +191,7 @@ class FakeActor {
 
 // ---- Globals ---------------------------------------------------------------
 globalThis.foundry = {
-  utils: { getProperty, setProperty, mergeObject, deepClone: clone, escapeHTML: (s) => s },
+  utils: { getProperty, setProperty, mergeObject, deepClone: clone, escapeHTML: (s) => s, randomID: () => newId() },
   applications: { api: { DialogV2: {
     prompt: async (o) => { log.push(`DIALOG: ${o.window.title}`); globalThis.lastReport = o.content; return true; },
     wait: async () => null,

@@ -5,8 +5,8 @@ import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
   traitUpdate, matchConfigKeys,
-} from "../common.js?v=0.1.6";
-import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.1.6";
+} from "../common.js?v=0.2.0";
+import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.2.0";
 
 const BOOK_KEYS = ["primary", "secondary", "tertiary", "spelllike"];
 
@@ -199,6 +199,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   }
 
   /* ---------- Equipment ---------- */
+  const equipmentData = new Map(); // plan ref -> item data
   const profs = plan.proficiencies ?? { armor: [], weapon: [], weaponCustom: [] };
   const namedWeaponProfs = new Set(profs.weaponCustom.map((n) => norm(n)));
   const weaponCategory = { simple: "sim", martial: "mar" };
@@ -208,14 +209,14 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     const fb = placeholder(w.name, "weapon", {
       subType: ["simple", "martial", "exotic"].includes(w.proficiency) ? w.proficiency : "martial",
     });
-    await takeOrPlaceholder(`Waffe: ${w.name}`, hit, fb, (d) => {
+    equipmentData.set(w.ref, (await takeOrPlaceholder(`Waffe: ${w.name}`, hit, fb, (d) => {
       setProp(d, "system.quantity", w.quantity);
       setProp(d, "system.equipped", w.equipped);
       if (namedWeaponProfs.has(norm(w.name)) || namedWeaponProfs.has(norm(d.name))
         || profs.weapon.includes(weaponCategory[w.proficiency])) setProp(d, "system.proficient", true);
       if (w.masterwork) setProp(d, "system.masterwork", true);
       if (w.enhancement) setProp(d, "system.enh", w.enhancement);
-    });
+    })).data);
     if (w.hasEnchantments) report.notes.push(`${w.name}: Waffeneigenschaften bitte manuell eintragen.`);
   }
   for (const a of plan.armor) {
@@ -226,20 +227,41 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
       armor: { value: a.ac, dex: a.maxDex, acp: a.acp },
       spellFailure: a.spellFailure,
     });
-    await takeOrPlaceholder(`Rüstung: ${a.name}`, hit, fb, (d) => {
+    equipmentData.set(a.ref, (await takeOrPlaceholder(`Rüstung: ${a.name}`, hit, fb, (d) => {
       setProp(d, "system.equipped", a.equipped);
       if (profs.armor.includes(armorCategory[a.type])) setProp(d, "system.proficient", true);
       if (a.masterwork) setProp(d, "system.masterwork", true);
       if (a.enhancement) setProp(d, "system.armor.enh", a.enhancement);
-    });
+    })).data);
   }
   for (const g of plan.gear) {
     const hit = await findEntry([g.name], { types: ["loot", "equipment", "consumable", "container", "weapon", "implant"], prefix: true });
-    await takeOrPlaceholder(`Gegenstand: ${g.name}`, hit, placeholder(g.name, "loot", { subType: "gear" }), (d) => {
+    equipmentData.set(g.ref, (await takeOrPlaceholder(`Gegenstand: ${g.name}`, hit, placeholder(g.name, "loot", { subType: "gear" }), (d) => {
       setProp(d, "system.quantity", g.quantity);
       if (g.equipped && ["equipment", "container"].includes(d.type)) setProp(d, "system.equipped", true);
-    });
+    })).data);
   }
+
+  /* ---------- Containers ---------- */
+  // Items inside a backpack etc. are stored in the PF1 container item itself (system.items).
+  const notInContainer = [];
+  for (const e of [...plan.weapons, ...plan.armor, ...plan.gear]) {
+    if (!e.parent) continue;
+    const child = equipmentData.get(e.ref);
+    const parent = equipmentData.get(e.parent);
+    if (!child || !parent) continue;
+    if (parent.type !== "container") {
+      notInContainer.push(`${e.name} (${parent.name} ist in PF1 kein Behälter)`);
+      continue;
+    }
+    const idx = created.indexOf(child);
+    if (idx >= 0) created.splice(idx, 1);
+    child._id = foundry.utils.randomID(16);
+    if (getProp(child, "system.equipped") !== undefined) setProp(child, "system.equipped", false);
+    const contents = getProp(parent, "system.items");
+    setProp(parent, "system.items", { ...(contents && typeof contents === "object" ? contents : {}), [child._id]: child });
+  }
+  if (notInContainer.length) report.notes.push(`Liegen direkt im Inventar: ${notInContainer.join(", ")}`);
 
   /* ---------- Spells ---------- */
   await sleep(300); // let the system finish class setup (it may auto-configure spellbooks)
