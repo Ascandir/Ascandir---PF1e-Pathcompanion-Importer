@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { log } from "./mock-foundry.mjs";
 
 const { importPathCompanion } = await import("../scripts/importers/pathcompanion.js");
-await import("../scripts/main.js"); // make sure the entry module loads
+await import("../scripts/core.js"); // registers the hooks
 
 const file = process.argv[2] ?? new URL("./durgan.json", import.meta.url);
 const json = JSON.parse(readFileSync(file, "utf8"));

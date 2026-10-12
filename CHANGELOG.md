@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4
+- Die Startdatei ist jetzt ein kleiner Lader, der den eigentlichen Code immer frisch nachlädt. Updates wirken dadurch auch hinter Proxys/Tunneln (z. B. Cloudflare), die Dateien mit festem Namen lange zwischenspeichern.
+
 ## 0.1.3
 - Nach einem Update lädt Foundry jetzt zuverlässig die neuen Skriptdateien (vorher konnte der Browser die alte Fassung weiterverwenden).
 - Das Import-Fenster zeigt die Modulversion im Titel.
