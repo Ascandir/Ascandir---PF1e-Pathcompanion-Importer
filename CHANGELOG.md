@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+- Import in einen bestehenden Charakter: Vorher erscheint eine Liste der vorhandenen Einträge mit der Wahl **Ersetzen / Behalten / Löschen**. Eigene Foundry-Items, die es in Path Companion nicht gibt, sind auf „Behalten“ vorausgewählt; Schnellknöpfe für alle „nur in Foundry“-Einträge.
+- Behaltene Einträge werden beim Import übersprungen, behaltene Behälter behalten ihren Inhalt.
+- Importierte Einträge merken sich ihren Path-Companion-Namen, damit sie beim nächsten Import sicher wiedererkannt werden.
+
 ## 0.2.0
 - Behälter: Gegenstände werden in denselben Behälter gelegt wie in Path Companion (z. B. Zelt, Decke und Rationen in den Rucksack, Zauberkomponenten in den Gürtelbeutel).
 

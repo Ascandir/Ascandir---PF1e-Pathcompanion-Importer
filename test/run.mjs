@@ -63,6 +63,7 @@ hooks.getActorSheetHeaderButtons[0]({ actor }, buttons);
 assert(buttons[0]?.label === "Ascandir", "Titelleisten-Knopf für ältere Bögen vorhanden");
 
 const before = actor.items.length;
+globalThis.waitResponder = () => {}; // accept the suggested defaults
 await importPathCompanion(json, { actor });
 assert(actor._source.system.traits.weaponProf.length === new Set(actor._source.system.traits.weaponProf).size
   && JSON.stringify(actor._source.system.traits.armorProf) === JSON.stringify(["lgt", "med"]), "Übungen nach erneutem Import nicht doppelt");
@@ -73,3 +74,38 @@ const { traitUpdate } = await import("../scripts/common.js");
 const old = { _source: { system: { traits: { languages: { value: ["common"], custom: "Gnoll" } } } } };
 const u = traitUpdate(old, "system.traits.languages", ["dwarven"], ["Undercommon"]);
 assert(JSON.stringify(u) === JSON.stringify({ "system.traits.languages.value": ["common", "dwarven"], "system.traits.languages.custom": "Gnoll;Undercommon" }), "traitUpdate: altes Objekt-Format");
+
+// --- Re-import with own Foundry items and keep/delete choices ---
+await actor.createEmbeddedDocuments("Item", [
+  { name: "Homebrew Ring", type: "loot", system: { subType: "misc" } },
+  { name: "Longsword, +1 Flaming", type: "weapon", system: {} },
+]);
+const oldKikko = actor.items.find((i) => i.name === "Kikko").id;
+const oldBackpack = actor.items.find((i) => i.name === "Backpack, Common").id;
+const defaults = {};
+globalThis.waitResponder = (selects) => {
+  for (const sel of selects) {
+    const item = actor.itemMap.get(sel.name);
+    defaults[item.name] = sel.value;
+    if (item.name === "Kikko") sel.value = "keep";
+    if (item.name === "Grease") sel.value = "delete";
+    if (item.name === "Backpack, Common") sel.value = "keep";
+  }
+};
+await importPathCompanion(json, { actor });
+const n2 = actor.items.map((i) => i.name);
+assert(defaults["Homebrew Ring"] === "keep" && defaults["Longsword, +1 Flaming"] === "keep", "Vorauswahl: eigene Foundry-Items → Behalten");
+assert(defaults.Toughness === "replace" && defaults.Kikko === "replace", "Vorauswahl: Einträge aus dem Import → Ersetzen");
+assert(!globalThis.lastWaitContent.includes(">Magus<"), "Klasse steht nicht in der Auswahl (wird immer ersetzt)");
+assert(n2.includes("Homebrew Ring") && n2.includes("Longsword, +1 Flaming"), "Eigene Items nach Import noch da");
+assert(n2.filter((x) => x === "Kikko").length === 1 && actor.items.find((i) => i.name === "Kikko").id === oldKikko, "Kikko behalten statt neu importiert");
+assert(!n2.includes("Grease"), "Grease gelöscht und nicht neu importiert");
+assert(n2.filter((x) => x === "Backpack, Common").length === 1 && actor.items.find((i) => i.name === "Backpack, Common").id === oldBackpack, "Rucksack behalten");
+assert(!n2.includes("Tent, Medium") && !n2.includes("Bedroll"), "Inhalt des behaltenen Rucksacks nicht zusätzlich importiert");
+assert(n2.filter((x) => x === "Toughness").length === 1 && n2.includes("Spell Combat"), "Ersetzte Einträge genau einmal vorhanden");
+
+// Cancel in the selection dialog → nothing changes
+const countBefore = actor.items.length;
+globalThis.waitResponder = null;
+const res = await importPathCompanion(json, { actor });
+assert(res === null && actor.items.length === countBefore, "Abbrechen in der Auswahl ändert nichts");

@@ -21,3 +21,53 @@
 .ascandir-import-button {
   flex: 0 0 100%;
 }
+
+/* Keep / replace / delete dialog */
+.ascandir-decisions .ascandir-legend {
+  margin: 4px 0 8px;
+  padding-left: 18px;
+  font-size: 12px;
+}
+.ascandir-decisions .ascandir-bulk {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ascandir-decisions .ascandir-table-wrap {
+  max-height: 440px;
+  overflow-y: auto;
+}
+.ascandir-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ascandir-table th,
+.ascandir-table td {
+  padding: 3px 6px;
+  text-align: left;
+  vertical-align: middle;
+}
+.ascandir-table tr.ascandir-group th {
+  padding-top: 10px;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.85;
+}
+.ascandir-table .ascandir-name img {
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: none;
+}
+.ascandir-table .ascandir-status {
+  font-size: 12px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.ascandir-table tr[data-status="foundry"] .ascandir-status {
+  font-weight: bold;
+  opacity: 1;
+}
+.ascandir-table select {
+  width: 110px;
+}

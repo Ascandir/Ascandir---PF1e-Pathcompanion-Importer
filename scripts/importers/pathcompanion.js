@@ -4,9 +4,10 @@
 import {
   MODULE_ID, FLAGS, sleep, getProp, setProp, esc, norm,
   getIndex, findEntry, itemDataFromUuid, linkMap, placeholder, resetActor, showReport,
+  askItemDecisions, nameVariants,
   traitUpdate, matchConfigKeys,
-} from "../common.js?v=0.2.0";
-import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.2.0";
+} from "../common.js?v=0.3.0";
+import { buildPlan, isOptionalFeature } from "./pathcompanion-parser.js?v=0.3.0";
 
 const BOOK_KEYS = ["primary", "secondary", "tertiary", "spelllike"];
 
@@ -36,16 +37,52 @@ function abilityType(t) {
   return ["ex", "su", "sp"].includes(v) ? v : "na";
 }
 
-export async function importPathCompanion(pcData, { actor = null } = {}) {
+/** Normalized names of everything the import may create (for matching existing items). */
+function planNames(plan) {
+  const names = [
+    ...(plan.race?.traits ?? []).map((t) => t.name),
+    ...plan.classes.flatMap((c) => c.features.map((f) => f.name)),
+    ...plan.feats.map((f) => f.name),
+    ...plan.traits.map((t) => t.name),
+    ...plan.spellbooks.flatMap((b) => b.spells.map((sp) => sp.name)),
+    ...plan.weapons.map((w) => w.name),
+    ...plan.armor.map((a) => a.name),
+    ...plan.gear.map((g) => g.name),
+  ];
+  return new Set(names.map((n) => norm(n)).filter(Boolean));
+}
+
+/**
+ * @param {object} pcData  Path Companion export
+ * @param {object} [options]
+ * @param {Actor}  [options.actor]   Existing actor to import into (a new one is created otherwise)
+ * @param {Function} [options.decide] Override for the keep/replace/delete dialog (tests)
+ */
+export async function importPathCompanion(pcData, { actor = null, decide = askItemDecisions } = {}) {
   if (game.system.id !== "pf1") throw new Error("Dieses Modul funktioniert nur mit dem Pathfinder-1e-System.");
   const plan = buildPlan(pcData);
   const report = { found: [], placeholders: [], skipped: [], notes: [...plan.notes] };
-  ui.notifications.info(`Importiere ${plan.name} …`);
 
+  // Existing actor: ask what happens with its current items first.
+  let keepIds = new Set();
+  let skipNames = new Set();
+  if (actor) {
+    const decisions = await decide(actor, planNames(plan));
+    if (!decisions) {
+      ui.notifications.info("Import abgebrochen.");
+      return null;
+    }
+    keepIds = decisions.keepIds;
+    skipNames = decisions.skipNames;
+    report.notes.push(...decisions.summary);
+  }
+  const isSkipped = (name) => nameVariants(name).some((v) => skipNames.has(norm(v)));
+
+  ui.notifications.info(`Importiere ${plan.name} …`);
   await getIndex();
 
   if (actor) {
-    await resetActor(actor);
+    await resetActor(actor, { keepIds });
     await actor.update({ name: plan.name });
   } else {
     actor = await Actor.implementation.create({
@@ -57,12 +94,19 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
 
   const created = []; // items created in one batch at the end
   const takeOrPlaceholder = async (label, hit, fallback, mutate) => {
+    const pcName = label.split(": ").slice(1).join(": ") || label;
+    if (isSkipped(pcName)) {
+      report.skipped.push(`${label} (vorhandene Version behalten bzw. gelöscht)`);
+      return { data: null, found: false, skipped: true };
+    }
     let data = hit ? await itemDataFromUuid(hit.uuid) : null;
     if (data) report.found.push(label);
     else {
       data = fallback;
       report.placeholders.push(label);
     }
+    setProp(data, `flags.${MODULE_ID}.imported`, true);
+    setProp(data, `flags.${MODULE_ID}.source`, pcName);
     if (mutate) mutate(data);
     created.push(data);
     return { data, found: data !== fallback };
@@ -200,11 +244,23 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
 
   /* ---------- Equipment ---------- */
   const equipmentData = new Map(); // plan ref -> item data
+  // Contents of a container the user keeps (or deletes) are not imported again.
+  const skippedRefs = new Set(
+    [...plan.weapons, ...plan.armor, ...plan.gear].filter((e) => isSkipped(e.name)).map((e) => e.ref),
+  );
+  const inSkippedContainer = (e) => {
+    if (e.parent && skippedRefs.has(e.parent)) {
+      report.skipped.push(`${e.name} (Behälter wurde nicht neu importiert)`);
+      return true;
+    }
+    return false;
+  };
   const profs = plan.proficiencies ?? { armor: [], weapon: [], weaponCustom: [] };
   const namedWeaponProfs = new Set(profs.weaponCustom.map((n) => norm(n)));
   const weaponCategory = { simple: "sim", martial: "mar" };
   const armorCategory = { light: "lgt", medium: "med", heavy: "hvy", shield: "shl", tower: "twr" };
   for (const w of plan.weapons) {
+    if (inSkippedContainer(w)) continue;
     const hit = await findEntry([w.name], { types: ["weapon"] });
     const fb = placeholder(w.name, "weapon", {
       subType: ["simple", "martial", "exotic"].includes(w.proficiency) ? w.proficiency : "martial",
@@ -220,6 +276,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     if (w.hasEnchantments) report.notes.push(`${w.name}: Waffeneigenschaften bitte manuell eintragen.`);
   }
   for (const a of plan.armor) {
+    if (inSkippedContainer(a)) continue;
     const hit = await findEntry([a.name], { types: ["equipment"] });
     const fb = placeholder(a.name, "equipment", {
       subType: a.type === "shield" ? "shield" : "armor",
@@ -235,6 +292,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
     })).data);
   }
   for (const g of plan.gear) {
+    if (inSkippedContainer(g)) continue;
     const hit = await findEntry([g.name], { types: ["loot", "equipment", "consumable", "container", "weapon", "implant"], prefix: true });
     equipmentData.set(g.ref, (await takeOrPlaceholder(`Gegenstand: ${g.name}`, hit, placeholder(g.name, "loot", { subType: "gear" }), (d) => {
       setProp(d, "system.quantity", g.quantity);
@@ -371,7 +429,8 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   const stray = actor.items
     .filter((i) => i.type === "feat"
       && ["classFeat", "racial"].includes(i.system?.subType)
-      && !i.getFlag(MODULE_ID, "imported"))
+      && !i.getFlag(MODULE_ID, "imported")
+      && !keepIds.has(i.id))
     .map((i) => i.id);
   if (stray.length) await actor.deleteEmbeddedDocuments("Item", stray);
 
@@ -380,7 +439,7 @@ export async function importPathCompanion(pcData, { actor = null } = {}) {
   const isOurs = (i) => !!i.getFlag(MODULE_ID, "imported");
   const itemKey = (i) => `${i.type}|${norm(i.name)}`;
   const ourKeys = new Set(actor.items.filter(isOurs).map(itemKey));
-  const dupes = actor.items.filter((i) => !isOurs(i) && ourKeys.has(itemKey(i)));
+  const dupes = actor.items.filter((i) => !isOurs(i) && !keepIds.has(i.id) && ourKeys.has(itemKey(i)));
   if (dupes.length) {
     await actor.deleteEmbeddedDocuments("Item", dupes.map((i) => i.id));
     report.notes.push(`Doppelt (von PF1 automatisch angehängt) entfernt: ${dupes.map((i) => i.name).join(", ")}`);

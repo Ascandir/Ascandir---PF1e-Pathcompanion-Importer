@@ -237,8 +237,9 @@ export function placeholder(name, type, system = {}) {
 /**
  * Empties an existing actor before an import: removes all items and skill ranks.
  */
-export async function resetActor(actor) {
-  if (actor.items.size) await actor.deleteEmbeddedDocuments("Item", actor.items.map((i) => i.id));
+export async function resetActor(actor, { keepIds = new Set() } = {}) {
+  const remove = actor.items.filter((i) => !keepIds.has(i.id)).map((i) => i.id);
+  if (remove.length) await actor.deleteEmbeddedDocuments("Item", remove);
   const update = {};
   for (const [key, skill] of Object.entries(actor._source?.system?.skills ?? {})) {
     if (skill && "rank" in skill) update[`system.skills.${key}.rank`] = 0;
@@ -254,6 +255,165 @@ export async function resetActor(actor) {
     }
   }
   if (Object.keys(update).length) await actor.update(update);
+}
+
+/* -------------------------------------------- */
+/*  Keep / replace / delete existing items      */
+/* -------------------------------------------- */
+
+const TYPE_GROUPS = [
+  { label: "Klassenfähigkeiten", test: (i) => i.type === "feat" && i.system?.subType === "classFeat" },
+  { label: "Talente", test: (i) => i.type === "feat" && i.system?.subType === "feat" },
+  { label: "Wesenszüge", test: (i) => i.type === "feat" && i.system?.subType === "trait" },
+  { label: "Volksmerkmale", test: (i) => i.type === "feat" && i.system?.subType === "racial" },
+  { label: "Sonstige Fähigkeiten", test: (i) => i.type === "feat" },
+  { label: "Zauber", test: (i) => i.type === "spell" },
+  { label: "Waffen", test: (i) => i.type === "weapon" || i.type === "attack" },
+  { label: "Rüstung & Ausrüstung", test: (i) => i.type === "equipment" },
+  { label: "Behälter", test: (i) => i.type === "container" },
+  { label: "Verbrauchsgüter", test: (i) => i.type === "consumable" },
+  { label: "Gegenstände", test: (i) => i.type === "loot" },
+  { label: "Buffs", test: (i) => i.type === "buff" },
+  { label: "Sonstiges", test: () => true },
+];
+/** Item types the import always rebuilds (they define level, HP and spellcasting). */
+const ALWAYS_REPLACED = ["class", "race"];
+
+/**
+ * Finds the name in `importNames` (normalized) that an existing item corresponds to.
+ * Uses the source name stored by earlier imports, then the item name and its variants.
+ */
+export function matchImportName(item, importNames) {
+  const candidates = [item.getFlag?.(MODULE_ID, "source"), item.name];
+  // Loose matching ("Backpack, Common" → "Backpack") only for items from an earlier import,
+  // so a hand-made "Longsword, +1 Flaming" isn't mistaken for the plain imported longsword.
+  const loose = !!item.getFlag?.(MODULE_ID, "imported");
+  for (const c of candidates) {
+    if (!c) continue;
+    const variants = [...nameVariants(c), ...(loose ? [String(c).split(/[,(]/)[0]] : [])];
+    for (const v of variants) {
+      const n = norm(v);
+      if (n && importNames.has(n)) return n;
+    }
+  }
+  return null;
+}
+
+/**
+ * Asks which existing items to replace, keep or delete before importing into an actor.
+ * @param {Actor} actor
+ * @param {Set<string>} importNames  Normalized names of everything the import will create
+ * @returns {Promise<{keepIds:Set<string>, skipNames:Set<string>, summary:string[]}|null>}
+ *          null if the user cancelled
+ */
+export async function askItemDecisions(actor, importNames) {
+  const rows = [];
+  for (const item of actor.items) {
+    if (ALWAYS_REPLACED.includes(item.type)) continue;
+    const match = matchImportName(item, importNames);
+    const fromImport = !!item.getFlag?.(MODULE_ID, "imported");
+    let status;
+    let action;
+    if (match) {
+      status = "auch im Import";
+      action = "replace";
+    } else if (fromImport) {
+      status = "nicht mehr im Import";
+      action = "delete";
+    } else {
+      status = "nur in Foundry";
+      action = "keep";
+    }
+    rows.push({ item, match, status, action });
+  }
+  const result = { keepIds: new Set(), skipNames: new Set(), summary: [] };
+  if (!rows.length) return result;
+
+  const groups = TYPE_GROUPS.map((g) => ({ label: g.label, rows: [] }));
+  for (const r of rows) {
+    const gi = TYPE_GROUPS.findIndex((g) => g.test(r.item));
+    groups[gi].rows.push(r);
+  }
+
+  const option = (value, label, row) => {
+    const disabled = value === "replace" && !row.match ? " disabled" : "";
+    const selected = row.action === value ? " selected" : "";
+    return `<option value="${value}"${selected}${disabled}>${label}</option>`;
+  };
+  const body = groups.filter((g) => g.rows.length).map((g) => `
+    <tr class="ascandir-group"><th colspan="3">${esc(g.label)}</th></tr>
+    ${g.rows.map((r) => `
+      <tr data-status="${r.match ? "match" : r.status === "nur in Foundry" ? "foundry" : "gone"}">
+        <td class="ascandir-name"><img src="${esc(r.item.img ?? "icons/svg/item-bag.svg")}" alt="">${esc(r.item.name)}</td>
+        <td class="ascandir-status">${esc(r.status)}</td>
+        <td>
+          <select name="${esc(r.item.id)}">
+            ${option("replace", "Ersetzen", r)}
+            ${option("keep", "Behalten", r)}
+            ${option("delete", "Löschen", r)}
+          </select>
+        </td>
+      </tr>`).join("")}`).join("");
+
+  const content = `
+    <div class="ascandir-decisions">
+      <p>Was soll mit den vorhandenen Einträgen von <strong>${esc(actor.name)}</strong> passieren?
+         Klassen und Volk werden immer aus dem Import neu angelegt.</p>
+      <ul class="ascandir-legend">
+        <li><strong>Ersetzen</strong> – wird gelöscht und aus dem Import neu angelegt</li>
+        <li><strong>Behalten</strong> – bleibt wie es ist; kommt es auch im Import vor, wird es dort übersprungen</li>
+        <li><strong>Löschen</strong> – wird entfernt und auch nicht neu importiert</li>
+      </ul>
+      <div class="ascandir-bulk">
+        <button type="button" data-bulk="keep-foundry"><i class="fa-solid fa-shield"></i> Alle „nur in Foundry“ behalten</button>
+        <button type="button" data-bulk="delete-foundry"><i class="fa-solid fa-trash"></i> Alle „nur in Foundry“ löschen</button>
+      </div>
+      <div class="ascandir-table-wrap">
+        <table class="ascandir-table">
+          <thead><tr><th>Eintrag</th><th>Status</th><th>Aktion</th></tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  const choices = await foundry.applications.api.DialogV2.wait({
+    window: { title: `Vorhandene Einträge: ${actor.name}`, icon: "fa-solid fa-list-check" },
+    position: { width: 640, height: 720 },
+    content,
+    buttons: [
+      {
+        action: "ok",
+        label: "Weiter zum Import",
+        icon: "fa-solid fa-file-import",
+        default: true,
+        callback: (event, button) => {
+          const out = {};
+          for (const el of button.form.querySelectorAll("select")) out[el.name] = el.value;
+          return out;
+        },
+      },
+      { action: "cancel", label: "Abbrechen", icon: "fa-solid fa-xmark" },
+    ],
+    render: (event, dialog) => {
+      const el = dialog?.element ?? event?.target?.element;
+      el?.querySelectorAll?.("[data-bulk]").forEach((btn) => btn.addEventListener("click", () => {
+        const value = btn.dataset.bulk === "keep-foundry" ? "keep" : "delete";
+        el.querySelectorAll('tr[data-status="foundry"] select').forEach((s) => { s.value = value; });
+      }));
+    },
+    rejectClose: false,
+  });
+  if (!choices || typeof choices !== "object") return null;
+
+  const counts = { replace: 0, keep: 0, delete: 0 };
+  for (const r of rows) {
+    const action = choices[r.item.id] ?? r.action;
+    counts[action] = (counts[action] ?? 0) + 1;
+    if (action === "keep") result.keepIds.add(r.item.id);
+    if (r.match && action !== "replace") result.skipNames.add(r.match);
+  }
+  result.summary.push(`Vorhandene Einträge: ${counts.replace} ersetzt, ${counts.keep} behalten, ${counts.delete} gelöscht.`);
+  return result;
 }
 
 export async function showReport(title, report) {

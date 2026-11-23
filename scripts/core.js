@@ -6,8 +6,8 @@
  * window lets you pick the source (currently Path Companion) and paste/select the
  * export. New sources can be added with `registerImporter`.
  */
-import { MODULE_ID, esc, resetIndex } from "./common.js?v=0.2.0";
-import { pathCompanionImporter } from "./importers/pathcompanion.js?v=0.2.0";
+import { MODULE_ID, esc, resetIndex } from "./common.js?v=0.3.0";
+import { pathCompanionImporter } from "./importers/pathcompanion.js?v=0.3.0";
 
 const LABEL = "Ascandir Import";
 const ICON = "fa-solid fa-file-import";
@@ -120,7 +120,9 @@ export async function openImportDialog(actor = null) {
   const options = list.map((i) => `<option value="${esc(i.id)}">${esc(i.label)}</option>`).join("");
   const target = actor
     ? `<p class="ascandir-warning"><i class="fa-solid fa-triangle-exclamation"></i>
-         Überschreibt <strong>${esc(actor.name)}</strong> komplett (alle Gegenstände, Talente, Zauber und Werte).</p>`
+         Importiert in <strong>${esc(actor.name)}</strong>. Werte, Klassen und Volk werden überschrieben –
+         bei vorhandenen Gegenständen, Talenten und Zaubern fragt der nächste Schritt, was ersetzt,
+         behalten oder gelöscht werden soll.</p>`
     : `<p>Es wird ein <strong>neuer</strong> Charakter angelegt.</p>`;
 
   const content = `
@@ -186,15 +188,6 @@ export async function openImportDialog(actor = null) {
   if (!text?.trim()) {
     ui.notifications.warn("Keine Datei gewählt und nichts eingefügt.");
     return;
-  }
-
-  if (actor) {
-    const ok = await foundry.applications.api.DialogV2.confirm({
-      window: { title: LABEL },
-      content: `<p>${esc(actor.name)} wirklich mit dem Import überschreiben?</p>`,
-      rejectClose: false,
-    });
-    if (!ok) return;
   }
 
   try {

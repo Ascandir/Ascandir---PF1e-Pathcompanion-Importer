@@ -194,7 +194,19 @@ globalThis.foundry = {
   utils: { getProperty, setProperty, mergeObject, deepClone: clone, escapeHTML: (s) => s, randomID: () => newId() },
   applications: { api: { DialogV2: {
     prompt: async (o) => { log.push(`DIALOG: ${o.window.title}`); globalThis.lastReport = o.content; return true; },
-    wait: async () => null,
+    // Answers a DialogV2.wait like a user would: reads the <select>s from the HTML,
+    // lets the test change values via globalThis.waitResponder, then "clicks" the first button.
+    wait: async (o) => {
+      const responder = globalThis.waitResponder;
+      if (!responder) return null;
+      globalThis.lastWaitContent = o.content;
+      const selects = [...o.content.matchAll(/<select name="([^"]+)">([\s\S]*?)<\/select>/g)].map((m) => ({
+        name: m[1],
+        value: (m[2].match(/<option value="(\w+)" selected/) ?? [])[1],
+      }));
+      responder(selects);
+      return o.buttons[0].callback({}, { form: { querySelectorAll: () => selects } });
+    },
     confirm: async () => true,
   } } },
 };

@@ -26,7 +26,14 @@ Danach das Modul in der Welt aktivieren.
    (bei älteren Bögen: Knopf **Ascandir** in der Titelleiste).
 3. Quelle **Path Companion** wählen, die Datei auswählen oder den JSON-Inhalt ins Textfeld einfügen → **Importieren**.
 
-Der Import **überschreibt** den geöffneten Charakter komplett (nach Rückfrage).
+Werte, Klassen und Volk des geöffneten Charakters werden überschrieben. Für vorhandene
+Gegenstände, Talente, Zauber usw. erscheint vorher eine Liste, in der du pro Eintrag wählst:
+
+- **Ersetzen** – wird gelöscht und aus dem Import neu angelegt (Vorauswahl, wenn der Eintrag auch im Import vorkommt)
+- **Behalten** – bleibt unverändert (Vorauswahl für Einträge, die es nur in Foundry gibt); kommt er auch im Import vor, wird er dort übersprungen
+- **Löschen** – wird entfernt und nicht neu importiert (Vorauswahl für Einträge aus einem früheren Import, die in Path Companion nicht mehr vorkommen)
+
+Behältst du einen Behälter (z. B. den Rucksack), bleibt auch sein Inhalt wie er ist.
 Über den Knopf **Ascandir Import** in der Akteur-Seitenleiste wird stattdessen ein neuer Charakter angelegt.
 
 Am Ende zeigt ein Bericht, was aus den Kompendien übernommen wurde und was nur als
